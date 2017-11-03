@@ -22,9 +22,11 @@
     "aws4-react-native": "0.0.2",
     "axios": "^0.17.0",
     "babel-preset-react-native": "^2.1.0",
+    "buffer": "^5.0.8",
     "react": "16.0.0-beta.5",
     "react-native": "^0.50.0",
     "react-native-aws-cognito-js": "0.0.7",
+    "react-native-fetch-blob": "^0.10.8",
     "react-native-prompt": "^1.0.0"
   }
 }
