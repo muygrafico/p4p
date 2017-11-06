@@ -7,7 +7,7 @@ import { Buffer } from 'buffer';
 import { WithAPI } from './lib/Categories/API/Components';
 import { WithAuth } from './lib/Categories/Auth/Components';
 import { WithStorage } from './lib/Categories/Storage/Components';
-import { SignIn, SignUp } from './lib/Categories/Auth/Components/Examples';
+import { AutoSignIn, SignUp } from './lib/Categories/Auth/Components/Examples';
 import awsmobile from './aws-exports';
 
 
@@ -19,7 +19,9 @@ export default WithStorage(WithAPI(WithAuth(class App extends React.Component {
   }
 
   async handleUploadFile() {
-    const url = 'https://awsmedia.s3.amazonaws.com/AWS_Logo_PoweredBy_127px.png';
+    // const url = 'https://awsmedia.s3.amazonaws.com/AWS_Logo_PoweredBy_127px.png';
+    const url = 'https://www.parrolabs.com/assets/images/posts/react-native.png';
+
     const [, fileName, extension] = /.*\/(.+)\.(\w+)$/.exec(url);
 
     // Get cognito identity for the signed in user
@@ -87,12 +89,13 @@ export default WithStorage(WithAPI(WithAuth(class App extends React.Component {
        <Button title="Upload file" onPress={this.handleUploadFile.bind(this)} />
        <Button title="Call API" onPress={this.handleCallAPI.bind(this)} />
        <Text>Response: {this.state.apiResponse && this.handleResponse(this.state.apiResponse)}</Text>
-       <Button title="Sign Out" onPress={() => this.props.doSignOut()} />
+       {/* <Button title="Sign Out" onPress={() => this.props.doSignOut()} /> */}
      </View>)
      :
      (<View style={styles.container}>
-       <SignIn {...this.props} />
-       <SignUp {...this.props} />
+       {/* <SignIn {...this.props} /> */}
+       <AutoSignIn {...this.props} />
+       {/* <SignUp {...this.props} /> */}
      </View>)
     );
   }
