@@ -113,10 +113,12 @@ export default WithStorage(WithAPI(WithAuth(class App extends React.Component {
           </View>
           }
           {this.state.showPreview &&
-            <Image
-              source={{uri: this.state.imageURL, isStatic:true}}
-              style={styles.livePreview}
-            />
+            <View style={styles.livePreview}>
+              <Image
+                source={{uri: this.state.imageURL, isStatic:true}}
+                style={styles.livePreview}
+              />
+            </View>
           }
             <View style={styles.bottomBar}>
 
@@ -143,12 +145,8 @@ export default WithStorage(WithAPI(WithAuth(class App extends React.Component {
 
 const styles = StyleSheet.create({
   circle: {
-    borderWidth:1,
-    borderColor:'rgba(0,0,0,0.2)',
     alignItems:'center',
-    justifyContent:'center',
-    // backgroundColor:'#fff',
-    borderRadius:50,
+    justifyContent:'center'
   },
   cameraButton: {
     width: 45,
