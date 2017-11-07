@@ -1,5 +1,4 @@
 import React from 'react';
-// import { DrawerNavigator } from 'react-navigation';
 import {
   StyleSheet,
   Text,
@@ -18,7 +17,7 @@ import { AutoSignIn, SignUp } from './lib/Categories/Auth/Components/Examples';
 import awsmobile from './aws-exports';
 import Camera from 'react-native-camera';
 import { TimelineLite } from 'gsap';
-
+import SvgUri from 'react-native-svg-uri';
 
 export default WithStorage(WithAPI(WithAuth(class App extends React.Component {
 
@@ -120,21 +119,14 @@ export default WithStorage(WithAPI(WithAuth(class App extends React.Component {
             />
           }
             <View style={styles.bottomBar}>
-              
+
               <TouchableOpacity
-                style={{
-                    borderWidth:1,
-                    borderColor:'rgba(0,0,0,0.2)',
-                    alignItems:'center',
-                    justifyContent:'center',
-                    width:50,
-                    height:50,
-                    backgroundColor:'#fff',
-                    borderRadius:50,
-                  }}
+                style={styles.circle}
                   onPress={this.takePicture.bind(this)}
               >
-                <Icon name={"chevron-right"}  size={30} color="#01a699" />
+                {/* <Icon name={"chevron-right"}  size={30} color="#01a699" /> */}
+                <Image style={styles.cameraButton} source={require('./img/camera-button.png')} />
+                <Text style={styles.buttonText}>push for photo</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -150,6 +142,19 @@ export default WithStorage(WithAPI(WithAuth(class App extends React.Component {
 
 
 const styles = StyleSheet.create({
+  circle: {
+    borderWidth:1,
+    borderColor:'rgba(0,0,0,0.2)',
+    alignItems:'center',
+    justifyContent:'center',
+    // backgroundColor:'#fff',
+    borderRadius:50,
+  },
+  cameraButton: {
+    width: 45,
+    height: 45,
+    margin:0
+  },
   appContainer: {
     flex: 1,
     flexDirection: 'column',
@@ -196,7 +201,7 @@ const styles = StyleSheet.create({
     marginBottom: 200
   },
   bottomBar: {
-    flex: 0.15,
+    flex: 0.225,
     borderTopColor: 'white',
     borderTopWidth: 2,
     alignItems: 'center',
@@ -204,5 +209,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#282828',
     bottom: 0,
     height: 80
+  },
+  buttonText: {
+    color: 'white',
+    paddingTop: 6,
+    fontWeight: '300',
+    letterSpacing: .5,
+    fontSize: 13
   }
 });
