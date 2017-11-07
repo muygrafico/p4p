@@ -5,6 +5,7 @@ import {
   View,
   Button,
   TouchableOpacity,
+  StatusBar,
   Image } from 'react-native';
 import AWS from 'aws-sdk';
 import { Icon } from 'react-native-elements';
@@ -101,6 +102,9 @@ export default WithStorage(WithAPI(WithAuth(class App extends React.Component {
       session ?
     (
       <View style={styles.appContainer}>
+        <StatusBar
+           hidden={true}
+         />
         <View style={styles.livePreviewContainer}>
           {!this.state.showPreview &&
             <View style={styles.livePreview}>
@@ -175,19 +179,13 @@ const styles = StyleSheet.create({
   },
   livePreview: {
     flex: 1,
-    paddingTop: 25,
-    paddingBottom: 15,
-    paddingLeft: 15,
-    paddingRight: 15
+    padding: 15,
   },
   camera: {
     flex: 1,
     justifyContent: 'flex-end',
     alignItems: 'center',
-    paddingTop: 25,
-    paddingBottom: 15,
-    paddingLeft: 15,
-    paddingRight: 15
+    padding: 15,
   },
   captureButton: {
     flex: 0,
@@ -199,7 +197,7 @@ const styles = StyleSheet.create({
     marginBottom: 200
   },
   bottomBar: {
-    flex: 0.225,
+    flex: 0.2,
     borderTopColor: 'white',
     borderTopWidth: 2,
     alignItems: 'center',
@@ -210,7 +208,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: 'white',
-    paddingTop: 6,
+    paddingTop: 10,
     fontWeight: '300',
     letterSpacing: .5,
     fontSize: 13
