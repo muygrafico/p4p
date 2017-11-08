@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Animated,
   StyleSheet,
   Text,
   View,
@@ -17,6 +18,40 @@ import Camera from 'react-native-camera';
 import { TimelineLite } from 'gsap';
 import SvgUri from 'react-native-svg-uri';
 import handleUploadFile from '../Utils/upload-file';
+
+class FadeInView extends React.Component {
+  state = {
+    fadeAnim: new Animated.Value(0),  // Initial value for opacity: 0
+  }
+
+  componentDidMount() {
+    Animated.timing(                  // Animate over time
+      this.state.fadeAnim,            // The animated value to drive
+      {
+        toValue: 1,                   // Animate to opacity: 1 (opaque)
+        duration: 500,              // Make it take a while
+      }
+    ).start();                        // Starts the animation
+  }
+
+  render() {
+    let { fadeAnim } = this.state;
+    const amountStyles = StyleSheet.flatten([this.props.style, { opacity: fadeAnim}])
+
+    return (
+      <Animated.View                 // Special animatable View
+        // style={{
+        //   ...this.props.style,
+        //   opacity: fadeAnim,         // Bind opacity to animated value
+        // }}
+        style={amountStyles}
+        // style={{opacity: fadeAnim}} {...this.props}
+      >
+        {this.props.children}
+      </Animated.View>
+    );
+  }
+}
 
 class Home extends React.Component {
 
@@ -92,12 +127,18 @@ class Home extends React.Component {
           </View>
           }
           {this.state.showPreview &&
-            <View style={styles.livePreview}>
+            // <View style={styles.livePreview}>
+            //   <Image
+            //     source={{uri: this.state.imageURL, isStatic:true}}
+            //     style={styles.picturePreview}
+            //   />
+            // </View>
+            <FadeInView style={styles.livePreview}>
               <Image
                 source={{uri: this.state.imageURL, isStatic:true}}
                 style={styles.picturePreview}
               />
-            </View>
+            </FadeInView>
           }
             <View style={styles.bottomBar}>
 
