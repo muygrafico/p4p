@@ -95,7 +95,7 @@ class Home extends React.Component {
             <View style={styles.livePreview}>
               <Image
                 source={{uri: this.state.imageURL, isStatic:true}}
-                style={styles.livePreview}
+                style={styles.picturePreview}
               />
             </View>
           }
@@ -153,6 +153,10 @@ const styles = StyleSheet.create({
 
   },
   livePreview: {
+    flex: 1,
+    padding: 15,
+  },
+  picturePreview: {
     flex: 1,
     padding: 15,
   },
