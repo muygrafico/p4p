@@ -2,7 +2,8 @@ import React from 'react';
 import {
   Animated,
   StyleSheet,
-  Dimensions
+  Dimensions,
+  Easing
 } from 'react-native';
 
 const {height, width} = Dimensions.get('window');
@@ -20,15 +21,18 @@ class AnimatedImageContainer extends React.Component {
       Animated.parallel([
         Animated.timing(this.state.topAnim, {
           toValue: height - 100,
-          duration: 750,
+          duration: 350,
+          easing: Easing.cubic
         }),
         Animated.timing(this.state.widthAnim, {
           toValue: 50,
-          duration: 750,
+          duration: 350,
+          easing: Easing.cubic
         }),
         Animated.timing(this.state.heightAnim, {
           toValue: 70,
-          duration: 750,
+          duration: 350,
+          easing: Easing.cubic
         }),
       ]),
     ]).start();
