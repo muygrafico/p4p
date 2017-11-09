@@ -112,11 +112,13 @@ const styles = StyleSheet.create({
   AnimatedView: {
   },
   appContainer: {
-
+    width: '100%',
+    height: '100%',
   },
   livePreviewContainer: {
     width:'100%',
-    height:'100%',
+    height: height - 130,
+    zIndex: 2,
   },
   livePreview: {
     // padding: 15,
@@ -126,6 +128,8 @@ const styles = StyleSheet.create({
     height: height - 130,
     marginTop: 15,
     marginLeft: 15,
+    position: 'absolute',
+    zIndex: 1
   },
   picturePreview: {
     width: '100%',

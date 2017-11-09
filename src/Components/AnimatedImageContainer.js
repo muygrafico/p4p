@@ -19,16 +19,16 @@ class AnimatedImageContainer extends React.Component {
     Animated.sequence([
       Animated.parallel([
         Animated.timing(this.state.topAnim, {
-          toValue: height - 80,
-          duration: 1500,
+          toValue: height - 100,
+          duration: 750,
         }),
         Animated.timing(this.state.widthAnim, {
-          toValue: 80,
-          duration: 1500,
+          toValue: 50,
+          duration: 750,
         }),
         Animated.timing(this.state.heightAnim, {
-          toValue: 80,
-          duration: 1500,
+          toValue: 70,
+          duration: 750,
         }),
       ]),
     ]).start();
