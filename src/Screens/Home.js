@@ -1,13 +1,15 @@
 import React from 'react';
 import {
   Animated,
+  Button,
+  Dimensions,
+  Image,
+  StatusBar,
   StyleSheet,
   Text,
-  View,
-  Button,
   TouchableOpacity,
-  StatusBar,
-  Image } from 'react-native';
+  View,
+} from 'react-native';
 import AWS from 'aws-sdk';
 import { Icon } from 'react-native-elements';
 import RNFetchBlob from 'react-native-fetch-blob';
@@ -18,40 +20,9 @@ import Camera from 'react-native-camera';
 import { TimelineLite } from 'gsap';
 import SvgUri from 'react-native-svg-uri';
 import handleUploadFile from '../Utils/upload-file';
+import AnimatedImageContainer from '../Components/AnimatedImageContainer';
 
-class FadeInView extends React.Component {
-  state = {
-    fadeAnim: new Animated.Value(0),  // Initial value for opacity: 0
-  }
-
-  componentDidMount() {
-    Animated.timing(                  // Animate over time
-      this.state.fadeAnim,            // The animated value to drive
-      {
-        toValue: 1,                   // Animate to opacity: 1 (opaque)
-        duration: 500,              // Make it take a while
-      }
-    ).start();                        // Starts the animation
-  }
-
-  render() {
-    let { fadeAnim } = this.state;
-    const amountStyles = StyleSheet.flatten([this.props.style, { opacity: fadeAnim}])
-
-    return (
-      <Animated.View                 // Special animatable View
-        // style={{
-        //   ...this.props.style,
-        //   opacity: fadeAnim,         // Bind opacity to animated value
-        // }}
-        style={amountStyles}
-        // style={{opacity: fadeAnim}} {...this.props}
-      >
-        {this.props.children}
-      </Animated.View>
-    );
-  }
-}
+const {height, width} = Dimensions.get('window');
 
 class Home extends React.Component {
 
@@ -62,36 +33,17 @@ class Home extends React.Component {
     imageData: null
   }
 
-  async handleCallAPI() {
-    const { api } = this.props;
-    const cloudLogicArray = JSON.parse(awsmobile.aws_cloud_logic_custom); // Get endpoint
-    const endPoint = cloudLogicArray[0].endpoint;
-    const requestParams = {
-      method: 'GET',
-      url: endPoint + '/items/pets',
-    };
-
-    let apiResponse = null;
-
-    try {
-      apiResponse = await api.restRequest(requestParams);
-    } catch (err) {
-      console.warn(err);
-    }
-
-    this.setState({ apiResponse });
-  }
-
   handleResponse(response) {
     return JSON.stringify(response)
   }
 
   takePicture() {
     const options = {};
-    //options.location = ...
+
     this.setState({
       showPreview: false
     })
+
     if (!this.state.showPreview) {
       this.camera.capture({metadata: options})
       .then((data) => {
@@ -102,7 +54,6 @@ class Home extends React.Component {
       })
       .catch(err => console.error(err));
     }
-
   }
 
   render() {
@@ -112,9 +63,8 @@ class Home extends React.Component {
       session ?
     (
       <View style={styles.appContainer}>
-        <StatusBar
-           hidden={true}
-         />
+        <StatusBar hidden={true} />
+
         <View style={styles.livePreviewContainer}>
           {!this.state.showPreview &&
             <View style={styles.livePreview}>
@@ -127,35 +77,30 @@ class Home extends React.Component {
           </View>
           }
           {this.state.showPreview &&
-            // <View style={styles.livePreview}>
-            //   <Image
-            //     source={{uri: this.state.imageURL, isStatic:true}}
-            //     style={styles.picturePreview}
-            //   />
-            // </View>
-            <FadeInView style={styles.livePreview}>
+            <AnimatedImageContainer style={styles.AnimatedView}>
               <Image
-                source={{uri: this.state.imageURL, isStatic:true}}
+                source={{uri: this.state.imageURL}}
                 style={styles.picturePreview}
               />
-            </FadeInView>
+            </AnimatedImageContainer>
           }
-            <View style={styles.bottomBar}>
 
-              <TouchableOpacity
-                style={styles.circle}
-                  onPress={this.takePicture.bind(this)}
-              >
-                {/* <Icon name={"chevron-right"}  size={30} color="#01a699" /> */}
-                <Image style={styles.cameraButton} source={require('../../img/camera-button.png')} />
-                <Text style={styles.buttonText}>push for photo</Text>
-              </TouchableOpacity>
-            </View>
+          </View>
+          <View style={stylesBottom.bottomBar}>
+
+            <TouchableOpacity
+              style={stylesBottom.circleContainer}
+                onPress={this.takePicture.bind(this)}
+            >
+              {/* <Icon name={"chevron-right"}  size={30} color="#01a699" /> */}
+              <Image style={stylesBottom.cameraButton} source={require('../../img/camera-button.png')} />
+              <Text style={stylesBottom.buttonText}>push for photo</Text>
+            </TouchableOpacity>
           </View>
         </View>
     )
      :
-     (<View style={styles.container}>
+     (<View style={styles.appContainer}>
        <AutoSignIn {...this.props} />
      </View>)
     );
@@ -164,74 +109,67 @@ class Home extends React.Component {
 
 
 const styles = StyleSheet.create({
-  circle: {
+  AnimatedView: {
+  },
+  appContainer: {
+
+  },
+  livePreviewContainer: {
+    width:'100%',
+    height:'100%',
+  },
+  livePreview: {
+    // padding: 15,
+  },
+  AnimatedView: {
+    width: width - 30,
+    height: height - 130,
+    marginTop: 15,
+    marginLeft: 15,
+  },
+  picturePreview: {
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+    // display: 'flex'
+  },
+  camera: {
+    width: width - 30,
+    height: height - 130,
+    marginTop: 15,
+    marginLeft: 15,
+    marginRight: 15,
+  },
+});
+
+const stylesBottom = StyleSheet.create({
+  circleContainer: {
     alignItems:'center',
-    justifyContent:'center'
+    justifyContent:'center',
   },
   cameraButton: {
     width: 45,
     height: 45,
-    margin:0
-  },
-  appContainer: {
-    flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    backgroundColor: 'blue',
-  },
-  livePreviewContainer: {
-    backgroundColor: '#fff',
-    width:'100%',
-    height:'100%',
-  },
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    padding: 20,
-
-  },
-  livePreview: {
-    flex: 1,
-    padding: 15,
-  },
-  picturePreview: {
-    flex: 1,
-    padding: 15,
-  },
-  camera: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-    padding: 15,
-  },
-  captureButton: {
-    flex: 0,
-    backgroundColor: '#fff',
-    borderRadius: 50,
-    color: '#000',
-    padding: 10,
-    margin: 40,
-    marginBottom: 200
+    margin:0,
   },
   bottomBar: {
-    flex: 0.2,
+    alignItems: 'center',
+    backgroundColor: '#282828',
     borderTopColor: 'white',
     borderTopWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#282828',
     bottom: 0,
-    height: 80
+    height: 100,
+    justifyContent: 'center',
+    position: 'absolute',
+    width: '100%',
+    zIndex: 0,
   },
   buttonText: {
     color: 'white',
-    paddingTop: 10,
+    fontSize: 13,
     fontWeight: '300',
     letterSpacing: .5,
-    fontSize: 13
+    paddingTop: 10,
   }
 });
 
