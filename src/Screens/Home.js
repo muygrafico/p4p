@@ -66,16 +66,7 @@ class Home extends React.Component {
         <StatusBar hidden={true} />
 
         <View style={styles.livePreviewContainer}>
-          {!this.state.showPreview &&
-            <View style={styles.livePreview}>
-              <Camera
-                ref={cam => this.camera = cam}
-                style={styles.camera}
-                captureTarget={Camera.constants.CaptureTarget.disk}
-                aspect={Camera.constants.Aspect.fill}>
-              </Camera>
-          </View>
-          }
+
           {this.state.showPreview &&
             <AnimatedImageContainer style={styles.AnimatedView}>
               <Image
@@ -85,19 +76,29 @@ class Home extends React.Component {
             </AnimatedImageContainer>
           }
 
+          <View style={styles.livePreview}>
+            <Camera
+              ref={cam => this.camera = cam}
+              style={styles.camera}
+              captureTarget={Camera.constants.CaptureTarget.disk}
+              aspect={Camera.constants.Aspect.fill}>
+            </Camera>
           </View>
-          <View style={stylesBottom.bottomBar}>
 
-            <TouchableOpacity
-              style={stylesBottom.circleContainer}
-                onPress={this.takePicture.bind(this)}
-            >
-              {/* <Icon name={"chevron-right"}  size={30} color="#01a699" /> */}
-              <Image style={stylesBottom.cameraButton} source={require('../../img/camera-button.png')} />
-              <Text style={stylesBottom.buttonText}>push for photo</Text>
-            </TouchableOpacity>
-          </View>
+
         </View>
+        <View style={stylesBottom.bottomBar}>
+
+          <TouchableOpacity
+            style={stylesBottom.circleContainer}
+              onPress={this.takePicture.bind(this)}
+          >
+            {/* <Icon name={"chevron-right"}  size={30} color="#01a699" /> */}
+            <Image style={stylesBottom.cameraButton} source={require('../../img/camera-button.png')} />
+            <Text style={stylesBottom.buttonText}>push for photo</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     )
      :
      (<View style={styles.appContainer}>
@@ -124,10 +125,12 @@ const styles = StyleSheet.create({
     // padding: 15,
   },
   AnimatedView: {
-    width: width - 30,
-    height: height - 130,
-    marginTop: 15,
-    marginLeft: 15,
+    width: width,
+    height: height - 100,
+    // marginTop: 15,
+    // marginLeft: 15,
+    borderWidth: 15,
+    borderColor: 'white',
     position: 'absolute',
     zIndex: 1
   },
@@ -138,11 +141,15 @@ const styles = StyleSheet.create({
     // display: 'flex'
   },
   camera: {
-    width: width - 30,
-    height: height - 130,
-    marginTop: 15,
-    marginLeft: 15,
-    marginRight: 15,
+    // width: width - 30,
+    // height: height - 130,
+    // marginTop: 15,
+    // marginLeft: 15,
+    // marginRight: 15,
+    width: width,
+    height: height - 100,
+    borderWidth: 15,
+    borderColor: 'white'
   },
 });
 
