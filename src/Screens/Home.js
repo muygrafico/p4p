@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Animated,
   Button,
   Dimensions,
   Image,
@@ -10,18 +9,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import AWS from 'aws-sdk';
 import { Icon } from 'react-native-elements';
-import RNFetchBlob from 'react-native-fetch-blob';
-import { Buffer } from 'buffer';
-import { AutoSignIn, SignUp } from '../../lib/Categories/Auth/Components/Examples';
-import awsmobile from '../../aws-exports';
+import { AutoSignIn } from '../../lib/Categories/Auth/Components/Examples';
 import Camera from 'react-native-camera';
-import { TimelineLite } from 'gsap';
-import SvgUri from 'react-native-svg-uri';
-import handleUploadFile from '../Utils/upload-file';
 import AnimatedImageContainer from '../Components/AnimatedImageContainer';
-
+import { colors, fonts, others } from '../Utils/theme';
 const {height, width} = Dimensions.get('window');
 
 class Home extends React.Component {
@@ -76,7 +68,7 @@ class Home extends React.Component {
             </AnimatedImageContainer>
           }
 
-          <View style={styles.livePreview}>
+          <View>
             <Camera
               ref={cam => this.camera = cam}
               style={styles.camera}
@@ -91,9 +83,8 @@ class Home extends React.Component {
 
           <TouchableOpacity
             style={stylesBottom.circleContainer}
-              onPress={this.takePicture.bind(this)}
+            onPress={this.takePicture.bind(this)}
           >
-            {/* <Icon name={"chevron-right"}  size={30} color="#01a699" /> */}
             <Image style={stylesBottom.cameraButton} source={require('../../img/camera-button.png')} />
             <Text style={stylesBottom.buttonText}>push for photo</Text>
           </TouchableOpacity>
@@ -110,46 +101,36 @@ class Home extends React.Component {
 
 
 const styles = StyleSheet.create({
-  AnimatedView: {
-  },
   appContainer: {
     width: '100%',
     height: '100%',
   },
   livePreviewContainer: {
-    width:'100%',
     height: height - 130,
+    width:'100%',
     zIndex: 2,
   },
   livePreview: {
-    // padding: 15,
+    borderWidth: 15,
   },
   AnimatedView: {
-    width: width,
-    height: height - 100,
-    // marginTop: 15,
-    // marginLeft: 15,
+    borderColor: colors.white,
     borderWidth: 15,
-    borderColor: 'white',
+    height: height - others.bottomBarHeight,
     position: 'absolute',
-    zIndex: 1
+    width: width,
+    zIndex: 1,
   },
   picturePreview: {
-    width: '100%',
     height: '100%',
     position: 'relative',
-    // display: 'flex'
+    width: '100%',
   },
   camera: {
-    // width: width - 30,
-    // height: height - 130,
-    // marginTop: 15,
-    // marginLeft: 15,
-    // marginRight: 15,
-    width: width,
-    height: height - 100,
-    borderWidth: 15,
-    borderColor: 'white'
+    left: 15,
+    top: 15,
+    height: height - (others.bottomBarHeight + 30),
+    width: width - 30,
   },
 });
 
@@ -165,18 +146,18 @@ const stylesBottom = StyleSheet.create({
   },
   bottomBar: {
     alignItems: 'center',
-    backgroundColor: '#282828',
-    borderTopColor: 'white',
+    backgroundColor: colors.black,
+    borderTopColor: colors.white,
     borderTopWidth: 2,
     bottom: 0,
-    height: 100,
+    height: others.bottomBarHeight,
     justifyContent: 'center',
     position: 'absolute',
     width: '100%',
     zIndex: 0,
   },
   buttonText: {
-    color: 'white',
+    color: colors.white,
     fontSize: 13,
     fontWeight: '300',
     letterSpacing: .5,

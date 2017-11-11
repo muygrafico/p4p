@@ -5,8 +5,10 @@ import {
   Dimensions,
   Easing
 } from 'react-native';
+import TimerMixin from 'react-timer-mixin';
 
 const {height, width} = Dimensions.get('window');
+const animationTime = 400;
 
 
 class AnimatedImageContainer extends React.Component {
@@ -15,43 +17,63 @@ class AnimatedImageContainer extends React.Component {
     widthAnim: new Animated.Value(width),  // Initial value for opacity: 0
     heightAnim: new Animated.Value(height - 100),  // Initial value for opacity: 0
     borderAnim: new Animated.Value(15),  // Initial value for opacity: 0
+    leftAnim: new Animated.Value(0),  // Initial value for opacity: 0
   }
 
-  componentDidMount() {
+  animate() {
     Animated.sequence([
       Animated.parallel([
         Animated.timing(this.state.topAnim, {
           toValue: height - 85,
-          duration: 350,
+          duration: animationTime,
           easing: Easing.cubic
         }),
         Animated.timing(this.state.widthAnim, {
           toValue: 50,
-          duration: 350,
+          duration: animationTime,
           easing: Easing.cubic
         }),
         Animated.timing(this.state.heightAnim, {
           toValue: 70,
-          duration: 350,
+          duration: animationTime,
           easing: Easing.cubic
         }),
         Animated.timing(this.state.borderAnim, {
-          toValue: 3,
-          duration: 350,
+          toValue: 5,
+          duration: animationTime,
+          easing: Easing.cubic
+        }),
+        Animated.timing(this.state.leftAnim, {
+          toValue: 15,
+          duration: animationTime,
           easing: Easing.cubic
         }),
       ]),
     ]).start();
   }
 
+  componentDidMount() {
+    TimerMixin.setTimeout(
+      () =>
+        this.animate(), 150
+    );
+  }
+
   render() {
-    let { topAnim, widthAnim, heightAnim, borderAnim } = this.state;
+    let {
+      topAnim,
+      leftAnim,
+      widthAnim,
+      heightAnim,
+      borderAnim
+     } = this.state;
     const allStyles = StyleSheet.flatten(
       [
         this.props.style,
         { top: topAnim },
-        { height: heightAnim },
+        { left: leftAnim },
         { borderWidth: borderAnim },
+        { height: heightAnim },
         { width: widthAnim }
       ])
 
