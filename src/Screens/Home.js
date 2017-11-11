@@ -20,23 +20,21 @@ import BottomBar from '../Components/Home/BottomBar';
 class Home extends React.Component {
 
   state = {
-    objectUrl: null,
-    apiResponse: null,
-    showPreview: false,
-    imageData: null
+    showPictureTaken: false,
+    imageURL: null
   }
 
   takePicture(e) {
     const options = {};
     this.setState({
-      showPreview: false
+      showPictureTaken: false
     })
 
-    if (!this.state.showPreview) {
+    if (!this.state.showPictureTaken) {
       this.camera.capture({metadata: options})
       .then((data) => {
         this.setState({
-          showPreview: true,
+          showPictureTaken: true,
           imageURL: data.path
         })
       })
@@ -53,7 +51,7 @@ class Home extends React.Component {
       <View style={styles.appContainer}>
         <StatusBar hidden={true} />
         <View style={styles.livePreviewContainer}>
-          {this.state.showPreview &&
+          {this.state.showPictureTaken &&
             <AnimatedImageContainer style={styles.AnimatedView}>
               <Image
                 source={{uri: this.state.imageURL}}
