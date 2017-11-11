@@ -5,19 +5,19 @@ import {
   Dimensions,
   Easing
 } from 'react-native';
+import { colors, fonts, othersTheme } from '../../Utils/theme';
 import TimerMixin from 'react-timer-mixin';
 
 const {height, width} = Dimensions.get('window');
 const animationTime = 400;
 
-
 class AnimatedImageContainer extends React.Component {
   state = {
-    topAnim: new Animated.Value(0),  // Initial value for opacity: 0
-    widthAnim: new Animated.Value(width),  // Initial value for opacity: 0
-    heightAnim: new Animated.Value(height - 100),  // Initial value for opacity: 0
-    borderAnim: new Animated.Value(15),  // Initial value for opacity: 0
-    leftAnim: new Animated.Value(0),  // Initial value for opacity: 0
+    topAnim: new Animated.Value(0),
+    widthAnim: new Animated.Value(width),
+    heightAnim: new Animated.Value(height - othersTheme.bottomBarHeight),
+    borderAnim: new Animated.Value(othersTheme.margins),
+    leftAnim: new Animated.Value(0),
   }
 
   animate() {

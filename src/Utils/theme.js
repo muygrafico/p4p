@@ -7,14 +7,16 @@ const fonts = {
   main: 'Helvetica',
 };
 
-const others = {
+let othersTheme = {
   aspectRatio: '2:3',
   margins: 15,
   bottomBarHeight: 100,
 };
 
+othersTheme.marginsx2 = othersTheme.margins * 2;
+
 export {
   colors,
   fonts,
-  others
+  othersTheme
 };

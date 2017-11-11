@@ -12,9 +12,10 @@ import {
 import { Icon } from 'react-native-elements';
 import { AutoSignIn } from '../../lib/Categories/Auth/Components/Examples';
 import Camera from 'react-native-camera';
-import AnimatedImageContainer from '../Components/AnimatedImageContainer';
-import { colors, fonts, others } from '../Utils/theme';
+import { colors, fonts, othersTheme } from '../Utils/theme';
 const {height, width} = Dimensions.get('window');
+import AnimatedImageContainer from '../Components/Home/AnimatedImageContainer';
+import BottomBar from '../Components/Home/BottomBar';
 
 class Home extends React.Component {
 
@@ -25,13 +26,8 @@ class Home extends React.Component {
     imageData: null
   }
 
-  handleResponse(response) {
-    return JSON.stringify(response)
-  }
-
-  takePicture() {
+  takePicture(e) {
     const options = {};
-
     this.setState({
       showPreview: false
     })
@@ -56,9 +52,7 @@ class Home extends React.Component {
     (
       <View style={styles.appContainer}>
         <StatusBar hidden={true} />
-
         <View style={styles.livePreviewContainer}>
-
           {this.state.showPreview &&
             <AnimatedImageContainer style={styles.AnimatedView}>
               <Image
@@ -77,18 +71,8 @@ class Home extends React.Component {
             </Camera>
           </View>
 
-
         </View>
-        <View style={stylesBottom.bottomBar}>
-
-          <TouchableOpacity
-            style={stylesBottom.circleContainer}
-            onPress={this.takePicture.bind(this)}
-          >
-            <Image style={stylesBottom.cameraButton} source={require('../../img/camera-button.png')} />
-            <Text style={stylesBottom.buttonText}>push for photo</Text>
-          </TouchableOpacity>
-        </View>
+        <BottomBar takePicture={this.takePicture.bind(this)} />
       </View>
     )
      :
@@ -106,17 +90,17 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   livePreviewContainer: {
-    height: height - 130,
+    height: height - (othersTheme.bottomBarHeight + othersTheme.marginsx2),
     width:'100%',
     zIndex: 2,
   },
   livePreview: {
-    borderWidth: 15,
+    borderWidth: othersTheme.margins,
   },
   AnimatedView: {
     borderColor: colors.white,
-    borderWidth: 15,
-    height: height - others.bottomBarHeight,
+    borderWidth: othersTheme.margins,
+    height: height - othersTheme.bottomBarHeight,
     position: 'absolute',
     width: width,
     zIndex: 1,
@@ -127,42 +111,11 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   camera: {
-    left: 15,
-    top: 15,
-    height: height - (others.bottomBarHeight + 30),
-    width: width - 30,
+    left: othersTheme.margins,
+    top: othersTheme.margins,
+    height: height - (othersTheme.bottomBarHeight + othersTheme.marginsx2),
+    width: width - othersTheme.marginsx2,
   },
-});
-
-const stylesBottom = StyleSheet.create({
-  circleContainer: {
-    alignItems:'center',
-    justifyContent:'center',
-  },
-  cameraButton: {
-    width: 45,
-    height: 45,
-    margin:0,
-  },
-  bottomBar: {
-    alignItems: 'center',
-    backgroundColor: colors.black,
-    borderTopColor: colors.white,
-    borderTopWidth: 2,
-    bottom: 0,
-    height: others.bottomBarHeight,
-    justifyContent: 'center',
-    position: 'absolute',
-    width: '100%',
-    zIndex: 0,
-  },
-  buttonText: {
-    color: colors.white,
-    fontSize: 13,
-    fontWeight: '300',
-    letterSpacing: .5,
-    paddingTop: 10,
-  }
 });
 
 export default Home;
