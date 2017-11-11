@@ -1,0 +1,41 @@
+{
+  "name": "pushforphoto-app",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "babel-preset-react-native-stage-0": "^1.0.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "jest-expo": "^22.0.0",
+    "react-test-renderer": "16.0.0-beta.5"
+  },
+  "scripts": {
+    "start": "react-native start",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "test": "node node_modules/jest/bin/jest.js --watch"
+  },
+  "jest": {
+    "preset": "jest-expo"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.144.0",
+    "aws4-react-native": "0.0.2",
+    "axios": "^0.17.0",
+    "babel-preset-react-native": "^2.1.0",
+    "buffer": "^5.0.8",
+    "gsap": "^1.20.3",
+    "react": "16.0.0-beta.5",
+    "react-native": "^0.50.0",
+    "react-native-aws-cognito-js": "0.0.7",
+    "react-native-camera": "^0.6.0",
+    "react-native-elements": "^0.18.2",
+    "react-native-fetch-blob": "^0.10.8",
+    "react-native-prompt": "^1.0.0",
+    "react-native-svg": "^5.3.0",
+    "react-native-svg-uri": "^1.2.1",
+    "react-native-vector-icons": "^4.4.2",
+    "react-navigation": "^1.0.0-beta.19",
+    "react-timer-mixin": "^0.13.3",
+    "uninstall": "0.0.0"
+  }
+}
