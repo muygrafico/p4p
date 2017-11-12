@@ -81,7 +81,6 @@ class Home extends React.Component {
   }
 };
 
-
 const styles = StyleSheet.create({
   appContainer: {
     width: '100%',
