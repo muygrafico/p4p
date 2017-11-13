@@ -10,7 +10,7 @@ class TopBar extends React.Component {
     this.props.navigation.goBack(null);
   }
 
-  render(){
+  render() {
     return(
       <View style={styles.topBar}>
         <TouchableOpacity
