@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   Alert,
   Button,
@@ -11,19 +12,22 @@ import {
   TouchableHighlight,
   View,
 } from 'react-native';
-import { AutoSignIn } from '../../lib/Categories/Auth/Components/Examples';
+
+import { actions as storageActions } from 'react-native-redux-storage-middleware';
+import { NavigationActions } from "react-navigation";
+
 import Camera from 'react-native-camera';
+import TimerMixin from 'react-timer-mixin';
+
+import { AutoSignIn } from '../../lib/Categories/Auth/Components/Examples';
 import { colors, fonts, othersTheme } from '../Utils/theme';
-const {height, width} = Dimensions.get('window');
 import AnimatedImageContainer from '../Components/Home/AnimatedImageContainer';
 import BottomBar from '../Components/Home/BottomBar';
-
 import { WithAPI } from '../../lib/Categories/API/Components';
 import { WithAuth } from '../../lib/Categories/Auth/Components';
 import { WithStorage } from '../../lib/Categories/Storage/Components';
-import { NavigationActions } from "react-navigation";
-import TimerMixin from 'react-timer-mixin';
 
+const {height, width} = Dimensions.get('window');
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -64,6 +68,11 @@ class Home extends React.Component {
       })
       .catch(err => console.error(err));
     }
+  }
+
+  componentDidMount() {
+    this.props.getAllKeys();
+    this.props.getItem('currSession');
   }
 
   render() {
@@ -137,4 +146,23 @@ const styles = StyleSheet.create({
     width: width - othersTheme.marginsx2,
   },
 });
-export default WithStorage(WithAPI(WithAuth(Home)));
+
+function mapStateToProps (state) {
+  return {
+    appData: state.appData
+  }
+}
+
+function mapDispatchToProps (dispatch) {
+  return {
+    fetchData: () => dispatch(fetchData()),
+    getAllKeys: () => dispatch(storageActions.getAllKeys()),
+    getItem: (key) => dispatch(storageActions.getItem(key)),
+  }
+}
+
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WithStorage(WithAPI(WithAuth(Home))));

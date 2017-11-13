@@ -3805,6 +3805,10 @@ react-native-prompt@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/react-native-prompt/-/react-native-prompt-1.0.0.tgz#41e0ec2aa7dd8f12f3a3ee83af9d63c4b670f8a1"
 
+react-native-redux-storage-middleware@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-redux-storage-middleware/-/react-native-redux-storage-middleware-1.1.2.tgz#9aec72035690179fb3e319571eaeb286a0f2d3dd"
+
 react-native-svg-uri@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/react-native-svg-uri/-/react-native-svg-uri-1.2.1.tgz#ca1480ea2a86d5bec6117c37e98b68b71580afbf"
