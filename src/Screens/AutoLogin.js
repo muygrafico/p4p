@@ -8,9 +8,6 @@ import {
   View,
 } from 'react-native';
 
-// const baseLibURL = `../../lib/Categories/Auth/Components`;
-
-// import WithAuth from '../../lib/Categories/Auth/Components/WithAuth';
 import MFAPrompt from '../../lib/Categories/Auth/Components/MFAPrompt';
 import { NavigationActions } from "react-navigation";
 import TimerMixin from 'react-timer-mixin';
@@ -104,6 +101,7 @@ class AutoSignIn extends React.Component {
     } catch (err) {
       console.log('CLIENT', err.message);
       this.setState({ errorMessage: err.message });
+      this.handleSignIn();
     }
   }
 
@@ -131,20 +129,6 @@ class AutoSignIn extends React.Component {
   render() {
     return (
       <View {...this.props} style={[styles.container, this.props.style]}>
-        {/* {this.state.showMFAPrompt &&
-          <MFAPrompt
-            onValidate={this.handleMFAValidate}
-            onCancel={this.handleMFACancel}
-            onSuccess={this.handleMFASuccess}
-          />}
-        <View style={styles.fieldsContainer}>
-          <Text>Username</Text>
-          <TextInput placeholder="Username" value={this.state.username} onChangeText={v => this.setState({ username: v })} autoCapitalize='none' autoCorrect={false} />
-          <Text>Password</Text>
-          <TextInput placeholder="Password" value={this.state.password} onChangeText={v => this.setState({ password: v })} secureTextEntry={true} />
-          <Button title="Sign In" onPress={this.handleSignIn} />
-          <Text>{this.state.errorMessage}</Text>
-        </View> */}
         <View style={styles.imgContainer}>
           <Image
             style={styles.loadingImg}
@@ -161,7 +145,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // alignItems: 'stretch',
     padding: 20,
   },
   fieldsContainer: {
@@ -181,10 +164,6 @@ const styles = StyleSheet.create({
     width: 155,
     height: 155,
     margin:0,
-    // flex: 1,
-    // alignSelf: 'center',
-    // width: undefined,
-    // height: undefined
   },
 });
 

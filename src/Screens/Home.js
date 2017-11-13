@@ -30,9 +30,10 @@ class Home extends React.Component {
     imageURL: null
   }
 
-  navigate = () => {
+  navigate = (where) => {
+    console.log(called);
       const navigateToAutoLogin = NavigationActions.navigate({
-        routeName:'AutoLogin',
+        routeName:where,
         params:{name:'Shubhnik'}
       });
 
@@ -73,6 +74,7 @@ class Home extends React.Component {
               <Image
                 source={{uri: this.state.imageURL}}
                 style={styles.picturePreview}
+                onPress={() => console.log('press image')}
               />
             </AnimatedImageContainer>
           }
@@ -91,7 +93,7 @@ class Home extends React.Component {
       </View>
     )
      :
-     this.navigate()
+     this.navigate('AutoLogin')
     );
   }
 };
