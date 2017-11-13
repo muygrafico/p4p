@@ -17,11 +17,29 @@ const {height, width} = Dimensions.get('window');
 import AnimatedImageContainer from '../Components/Home/AnimatedImageContainer';
 import BottomBar from '../Components/Home/BottomBar';
 
+import { WithAPI } from '../../lib/Categories/API/Components';
+import { WithAuth } from '../../lib/Categories/Auth/Components';
+import { WithStorage } from '../../lib/Categories/Storage/Components';
+import { NavigationActions } from "react-navigation";
+
+
 class Home extends React.Component {
 
   state = {
     showPictureTaken: false,
     imageURL: null
+  }
+
+  navigate = () => {
+      const navigateToAutoLogin = NavigationActions.navigate({
+        routeName:'AutoLogin',
+        params:{name:'Shubhnik'}
+      });
+
+      TimerMixin.setTimeout(
+        () =>
+          this.props.navigation.dispatch(navigateToAutoLogin), 150
+      );
   }
 
   takePicture(e) {
@@ -44,7 +62,6 @@ class Home extends React.Component {
 
   render() {
     const { session } = this.props;
-
     return (
       session ?
     (
@@ -74,9 +91,7 @@ class Home extends React.Component {
       </View>
     )
      :
-     (<View style={styles.appContainer}>
-       <AutoSignIn {...this.props} />
-     </View>)
+     this.navigate()
     );
   }
 };
@@ -114,5 +129,5 @@ const styles = StyleSheet.create({
     width: width - othersTheme.marginsx2,
   },
 });
-
-export default Home;
+export default WithStorage(WithAPI(WithAuth(Home)));
+// export default Home;

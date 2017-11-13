@@ -5,17 +5,30 @@ import { addNavigationHelpers, StackNavigator } from 'react-navigation';
 
 import HomeScreen from '../Screens/Home';
 import QueueListScreen from '../Screens/QueueList';
-// import SplashScreen from '../Screens/Splash';
+import AutoLoginScreen from '../Screens/AutoLogin';
+import SplashScreen from '../Screens/Splash';
+import { WithAPI } from '../../lib/Categories/API/Components';
+import { WithAuth } from '../../lib/Categories/Auth/Components';
+import { WithStorage } from '../../lib/Categories/Storage/Components';
 
-export const AppNavigator = StackNavigator({
-  Home: {
-    screen: HomeScreen,
-    navigationOptions: {header: null}
-  },
-  QueueList: {
-    screen: QueueListScreen,
-    navigationOptions: {header: null}
-  }
+export const AppNavigator = StackNavigator(
+  {
+    Home: {
+      screen: HomeScreen,
+      navigationOptions: {header: null}
+    },
+    QueueList: {
+      screen: QueueListScreen,
+      navigationOptions: {header: null}
+    },
+    Autologin: {
+      screen: AutoLoginScreen,
+      navigationOptions: {header: null}
+    },
+    Splash: {
+      screen: SplashScreen,
+      navigationOptions: {header: null}
+    },
   },{
     header: { visible: false }
   }

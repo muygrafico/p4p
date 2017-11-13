@@ -1,23 +1,191 @@
 import React from 'react';
 import {
+  Button,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
   View,
 } from 'react-native';
 
-import { AutoSignIn } from '../../lib/Categories/Auth/Components/Examples';
+// const baseLibURL = `../../lib/Categories/Auth/Components`;
 
+// import WithAuth from '../../lib/Categories/Auth/Components/WithAuth';
+import MFAPrompt from '../../lib/Categories/Auth/Components/MFAPrompt';
+import { NavigationActions } from "react-navigation";
+import TimerMixin from 'react-timer-mixin';
 
-class AutoLogin extends React.Component {
+import { WithAPI } from '../../lib/Categories/API/Components';
+import { WithAuth } from '../../lib/Categories/Auth/Components';
+import { WithStorage } from '../../lib/Categories/Storage/Components';
+
+class AutoSignIn extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      username: 'guest',
+      password: 'guest1234',
+      errorMessage: null,
+    };
+
+    this.resolver = Promise.resolve();
+
+    this.handleSignIn = this.handleSignIn.bind(this);
+    this.doSignIn = this.doSignIn.bind(this);
+
+    this.handleMFAValidate = this.handleMFAValidate.bind(this);
+    this.handleMFACancel = this.handleMFACancel.bind(this);
+    this.handleMFASuccess = this.handleMFASuccess.bind(this);
+  }
+
+  navigate = () => {
+      const navigateToHome = NavigationActions.navigate({
+        routeName:'Home',
+        params:{name:'Shubhnik'}
+      });
+
+      TimerMixin.setTimeout(
+        () =>
+          this.props.navigation.dispatch(navigateToHome), 1000
+      );
+  }
+
+  /**
+   * Signs in a user with a username.password combination. If needed, takes care of MFA.
+   *
+   * @param {string} username
+   * @param {string} password
+   */
+  doSignIn(username, password) {
+    const { auth } = this.props;
+    let showMFAPrompt = false;
+
+    return new Promise(async (outResolve, reject) => {
+      this.resolver = outResolve;
+
+      const session = await new Promise((resolve) => {
+        auth.handleSignIn(username, password, auth.loginCallbackFactory({
+          onSuccess(session) {
+            console.log('loginCallbacks.onSuccess', session);
+            resolve(session);
+            this.navigate();
+          },
+          onFailure(err) {
+            console.log('loginCallbacks.onFailure', err);
+            reject(new Error(err.invalidCredentialsMessage || err.message || err));
+          },
+          newPasswordRequired(data) {
+            reject(new Error('newPasswordRequired'));
+          },
+          mfaRequired(challengeName, challengeParameters) {
+            showMFAPrompt = true;
+            resolve();
+          },
+        }, this));
+      });
+
+      this.setState({ showMFAPrompt }, () => {
+        if (session) {
+          this.resolver(session);
+        }
+      });
+    });
+  }
+
+  async handleSignIn() {
+    const { username, password } = this.state;
+
+    try {
+      const session = await this.doSignIn(username, password);
+      this.props.onSignIn(session);
+
+      console.log('CLIENT', 'Signed In: ' + (session ? 'YES' : 'NO'));
+    } catch (err) {
+      console.log('CLIENT', err.message);
+      this.setState({ errorMessage: err.message });
+    }
+  }
+
+  handleMFAValidate(code = '') {
+    const { auth } = this.props;
+
+    return new Promise((resolve, reject) =>
+      auth.sendMFAVerificationCode(code, { onFailure: reject, onSuccess: resolve }, this));
+  }
+
+  handleMFACancel() {
+    this.setState({ showMFAPrompt: false });
+    this.resolver(null);
+  }
+
+  handleMFASuccess(session) {
+    this.resolver(session);
+    this.setState({ showMFAPrompt: false });
+  }
+
+  componentDidMount() {
+    this.handleSignIn();
+  }
 
   render() {
     return (
-      (<View style={styles.appContainer}>
-        <AutoSignIn {...this.props} />
-      </View>)
+      <View {...this.props} style={[styles.container, this.props.style]}>
+        {/* {this.state.showMFAPrompt &&
+          <MFAPrompt
+            onValidate={this.handleMFAValidate}
+            onCancel={this.handleMFACancel}
+            onSuccess={this.handleMFASuccess}
+          />}
+        <View style={styles.fieldsContainer}>
+          <Text>Username</Text>
+          <TextInput placeholder="Username" value={this.state.username} onChangeText={v => this.setState({ username: v })} autoCapitalize='none' autoCorrect={false} />
+          <Text>Password</Text>
+          <TextInput placeholder="Password" value={this.state.password} onChangeText={v => this.setState({ password: v })} secureTextEntry={true} />
+          <Button title="Sign In" onPress={this.handleSignIn} />
+          <Text>{this.state.errorMessage}</Text>
+        </View> */}
+        <View style={styles.imgContainer}>
+          <Image
+            style={styles.loadingImg}
+            source={require('../../img/loading.gif')}
+          />
+        </View>
+      </View>
     );
   }
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // alignItems: 'stretch',
+    padding: 20,
+  },
+  fieldsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  imgContainer:{
+    width:10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative'
+  },
+  loadingImg: {
+    width: 155,
+    height: 155,
+    margin:0,
+    // flex: 1,
+    // alignSelf: 'center',
+    // width: undefined,
+    // height: undefined
+  },
 });
 
-export default AutoLogin;
+export default WithStorage(WithAPI(WithAuth(AutoSignIn)));
