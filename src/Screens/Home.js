@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   Button,
   Dimensions,
   Image,
@@ -7,9 +8,9 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  TouchableHighlight,
   View,
 } from 'react-native';
-import { Icon } from 'react-native-elements';
 import { AutoSignIn } from '../../lib/Categories/Auth/Components/Examples';
 import Camera from 'react-native-camera';
 import { colors, fonts, othersTheme } from '../Utils/theme';
@@ -21,21 +22,25 @@ import { WithAPI } from '../../lib/Categories/API/Components';
 import { WithAuth } from '../../lib/Categories/Auth/Components';
 import { WithStorage } from '../../lib/Categories/Storage/Components';
 import { NavigationActions } from "react-navigation";
-
+import TimerMixin from 'react-timer-mixin';
 
 class Home extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.navigate = this.navigate.bind(this);
+  }
 
   state = {
     showPictureTaken: false,
     imageURL: null
   }
 
-  navigate = (where) => {
-    console.log(called);
-      const navigateToAutoLogin = NavigationActions.navigate({
-        routeName:where,
-        params:{name:'Shubhnik'}
-      });
+  navigate (where) {
+      let navigateToAutoLogin =
+        NavigationActions.navigate({
+          routeName: where
+        });
 
       TimerMixin.setTimeout(
         () =>
@@ -71,11 +76,12 @@ class Home extends React.Component {
         <View style={styles.livePreviewContainer}>
           {this.state.showPictureTaken &&
             <AnimatedImageContainer style={styles.AnimatedView}>
-              <Image
-                source={{uri: this.state.imageURL}}
-                style={styles.picturePreview}
-                onPress={() => console.log('press image')}
-              />
+               <TouchableHighlight onPress={()=> this.navigate('QueueList')}>
+                <Image
+                  source={{uri: this.state.imageURL}}
+                  style={styles.picturePreview}
+                />
+              </TouchableHighlight>
             </AnimatedImageContainer>
           }
 
@@ -132,4 +138,3 @@ const styles = StyleSheet.create({
   },
 });
 export default WithStorage(WithAPI(WithAuth(Home)));
-// export default Home;
