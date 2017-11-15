@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {
   Alert,
   Button,
@@ -26,6 +27,9 @@ import BottomBar from '../Components/Home/BottomBar';
 import { WithAPI } from '../../lib/Categories/API/Components';
 import { WithAuth } from '../../lib/Categories/Auth/Components';
 import { WithStorage } from '../../lib/Categories/Storage/Components';
+
+import { fetchStorage } from '../actions/storageActions';
+import { savePhotoUrl } from '../actions/cameraActions';
 
 const {height, width} = Dimensions.get('window');
 class Home extends React.Component {
@@ -64,15 +68,18 @@ class Home extends React.Component {
         this.setState({
           showPictureTaken: true,
           imageURL: data.path
-        })
+        });
+        this.props.savePhotoUrl(data.path);
       })
       .catch(err => console.error(err));
     }
   }
 
   componentDidMount() {
-    this.props.getAllKeys();
-    this.props.getItem('currSession');
+    this.props.fetchStorage('app-data');
+    console.log(this.props.appData);
+    // this.props.getAllKeys();
+    // this.props.fetchStorage('app-data');
   }
 
   render() {
@@ -152,17 +159,12 @@ function mapStateToProps (state) {
     appData: state.appData
   }
 }
-
-function mapDispatchToProps (dispatch) {
-  return {
-    fetchData: () => dispatch(fetchData()),
-    getAllKeys: () => dispatch(storageActions.getAllKeys()),
-    getItem: (key) => dispatch(storageActions.getItem(key)),
-  }
-}
-
+const mapDispatchToProps = dispatch => bindActionCreators({
+  fetchStorage,
+  savePhotoUrl,
+}, dispatch);
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(WithStorage(WithAPI(WithAuth(Home))));
+)(WithAPI(WithAuth(Home)));

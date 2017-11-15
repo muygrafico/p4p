@@ -54,7 +54,7 @@ class BottomBar extends React.Component {
           style={stylesBottom.circleContainer}
           onPress={() => this.handleOnPress()}
         >
-          <Image style={stylesBottom.cameraButton} source={require('../../../img/camera-button.png')} />
+          <Image style={stylesBottom.cameraButton} source={require('../../img/camera-button.png')} />
           <Text style={stylesBottom.buttonText}>push for photo</Text>
         </TouchableOpacity>
       </View>

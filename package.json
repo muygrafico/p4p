@@ -12,7 +12,8 @@
     "start": "react-native start",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "test": "node node_modules/jest/bin/jest.js --watch"
+    "test": "node node_modules/jest/bin/jest.js --watch",
+    "postinstall": "rndebugger-open"
   },
   "jest": {
     "preset": "jest-expo"
@@ -24,6 +25,8 @@
     "babel-preset-react-native": "^2.1.0",
     "buffer": "^5.0.8",
     "gsap": "^1.20.3",
+    "keymirror": "^0.1.1",
+    "moment": "^2.19.2",
     "react": "16.0.0-beta.5",
     "react-native": "^0.50.0",
     "react-native-aws-cognito-js": "0.0.7",
@@ -40,6 +43,7 @@
     "react-timer-mixin": "^0.13.3",
     "redux": "^3.7.2",
     "redux-observable": "^0.17.0",
+    "redux-promise": "^0.5.3",
     "redux-promise-middleware": "^4.4.2",
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.2.0",

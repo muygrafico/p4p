@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { NavigationActions } from 'react-navigation';
-
+import { WithAuth } from '../../lib/Categories/Auth/Components';
 import Constants from '../Utils/constants';
 
 const styles = StyleSheet.create({
@@ -37,7 +37,7 @@ class Splash extends React.Component {
         }
 
         resolve();
-      }, 3000));
+      }, 150));
     } catch (exception) {
       console.log('rejected', exception);
     }
@@ -62,4 +62,4 @@ class Splash extends React.Component {
 
 }
 
-export default Splash;
+export default WithAuth(Splash);

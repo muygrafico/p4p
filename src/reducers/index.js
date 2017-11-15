@@ -5,7 +5,7 @@ import nav from './navReducer';
 
 const rootReducer = combineReducers({
     appData,
-    nav
+    nav,
 });
 
 export default rootReducer;

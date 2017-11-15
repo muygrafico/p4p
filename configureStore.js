@@ -1,10 +1,13 @@
 import { createStore, applyMiddleware } from 'redux';
-import app from './reducers';
+import promise from 'redux-promise';
+import app from './src/reducers';
 import thunk from 'redux-thunk';
 import { middleware as storageMiddleware } from 'react-native-redux-storage-middleware';
 
+
 const middleware = [
   thunk,
+  promise,
   storageMiddleware,
 ]
 

@@ -1,4 +1,4 @@
-import { AppNavigator } from '../src/Navigators/AppNavigator';
+import { AppNavigator } from '../Navigators/AppNavigator';
 
 // Start with two routes: Autologin, with the Splash screen on top.
 const firstAction = AppNavigator.router.getActionForPathAndParams('Autologin');

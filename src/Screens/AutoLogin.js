@@ -1,4 +1,6 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import {
   Button,
   Image,
@@ -15,6 +17,7 @@ import TimerMixin from 'react-timer-mixin';
 import { WithAPI } from '../../lib/Categories/API/Components';
 import { WithAuth } from '../../lib/Categories/Auth/Components';
 import { WithStorage } from '../../lib/Categories/Storage/Components';
+import { fetchStorage } from '../actions/storageActions';
 
 class AutoSignIn extends React.Component {
   constructor(props) {
@@ -23,6 +26,7 @@ class AutoSignIn extends React.Component {
     this.state = {
       username: 'guest',
       password: 'guest1234',
+      isLoggedIn: null,
       errorMessage: null,
     };
 
@@ -39,7 +43,7 @@ class AutoSignIn extends React.Component {
   navigate = () => {
       const navigateToHome = NavigationActions.navigate({
         routeName:'Home',
-        params:{name:'Shubhnik'}
+        params:{name:'Home'}
       });
 
       TimerMixin.setTimeout(
@@ -122,8 +126,14 @@ class AutoSignIn extends React.Component {
     this.setState({ showMFAPrompt: false });
   }
 
+  // componentDidMount() {
+  //   this.handleSignIn();
+  // }
+
   componentDidMount() {
-    this.handleSignIn();
+    // this.props.fetchStorage('app-data');
+    // console.log(this.props.appData);
+    // this.setState({isLoggedIn: })
   }
 
   render() {
@@ -132,7 +142,7 @@ class AutoSignIn extends React.Component {
         <View style={styles.imgContainer}>
           <Image
             style={styles.loadingImg}
-            source={require('../../img/loading.gif')}
+            source={require('../img/loading.gif')}
           />
         </View>
       </View>
@@ -167,4 +177,22 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WithStorage(WithAPI(WithAuth(AutoSignIn)));
+function mapStateToProps (state) {
+  return {
+    appData: state.appData
+  }
+}
+const mapDispatchToProps = dispatch => bindActionCreators({
+  fetchStorage,
+}, dispatch);
+
+export default
+  WithStorage(
+    WithAPI(
+      WithAuth(
+        connect(
+          mapStateToProps,mapDispatchToProps
+        )(AutoSignIn)
+      )
+    )
+  );
