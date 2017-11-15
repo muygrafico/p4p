@@ -5,7 +5,7 @@ import {
 
 import { Provider } from 'react-redux';
 import configureStore from './configureStore';
-import AppWithNavigationState from './src/Navigators/AppNavigator';
+import AppWithNavigationState from './src/navigators/AppNavigator';
 
 const store = configureStore();
 

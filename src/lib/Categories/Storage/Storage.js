@@ -50,8 +50,8 @@ const Storage = {
 
   /**
    * Returns a Url for the given object key
-   *  
-   * @param {string} Key 
+   *
+   * @param {string} Key
    * @returns {string} Url to object
    */
   getObjectUrl(Key) {

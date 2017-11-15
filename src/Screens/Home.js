@@ -20,13 +20,13 @@ import { NavigationActions } from "react-navigation";
 import Camera from 'react-native-camera';
 import TimerMixin from 'react-timer-mixin';
 
-import { AutoSignIn } from '../../lib/Categories/Auth/Components/Examples';
+import { AutoSignIn } from '../lib/Categories/Auth/Components/Examples';
 import { colors, fonts, othersTheme } from '../Utils/theme';
 import AnimatedImageContainer from '../Components/Home/AnimatedImageContainer';
 import BottomBar from '../Components/Home/BottomBar';
-import { WithAPI } from '../../lib/Categories/API/Components';
-import { WithAuth } from '../../lib/Categories/Auth/Components';
-import { WithStorage } from '../../lib/Categories/Storage/Components';
+import { WithAPI } from '../lib/Categories/API/Components';
+import { WithAuth } from '../lib/Categories/Auth/Components';
+import { WithStorage } from '../lib/Categories/Storage/Components';
 
 import { fetchStorage } from '../actions/storageActions';
 import { savePhotoUrl } from '../actions/cameraActions';

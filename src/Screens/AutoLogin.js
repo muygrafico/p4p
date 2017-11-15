@@ -10,13 +10,13 @@ import {
   View,
 } from 'react-native';
 
-import MFAPrompt from '../../lib/Categories/Auth/Components/MFAPrompt';
+import MFAPrompt from '../lib/Categories/Auth/Components/MFAPrompt';
 import { NavigationActions } from "react-navigation";
 import TimerMixin from 'react-timer-mixin';
 
-import { WithAPI } from '../../lib/Categories/API/Components';
-import { WithAuth } from '../../lib/Categories/Auth/Components';
-import { WithStorage } from '../../lib/Categories/Storage/Components';
+import { WithAPI } from '../lib/Categories/API/Components';
+import { WithAuth } from '../lib/Categories/Auth/Components';
+import { WithStorage } from '../lib/Categories/Storage/Components';
 import { fetchStorage } from '../actions/storageActions';
 
 class AutoSignIn extends React.Component {

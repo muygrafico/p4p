@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { NavigationActions } from 'react-navigation';
-import { WithAuth } from '../../lib/Categories/Auth/Components';
+import { WithAuth } from '../lib/Categories/Auth/Components';
 import Constants from '../Utils/constants';
 
 const styles = StyleSheet.create({
