@@ -12,8 +12,7 @@
     "start": "react-native start",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "test": "node node_modules/jest/bin/jest.js --watch",
-    "postinstall": "rndebugger-open"
+    "test": "node node_modules/jest/bin/jest.js --watch"
   },
   "jest": {
     "preset": "jest-expo"
@@ -26,6 +25,7 @@
     "buffer": "^5.0.8",
     "gsap": "^1.20.3",
     "keymirror": "^0.1.1",
+    "mime-types": "^2.1.17",
     "moment": "^2.19.2",
     "react": "16.0.0-beta.5",
     "react-native": "^0.50.0",
