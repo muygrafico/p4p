@@ -31,7 +31,13 @@ import { WithStorage } from '../lib/Categories/Storage/Components';
 import { fetchStorage } from '../actions/storageActions';
 import { savePhotoUrl } from '../actions/cameraActions';
 
+import RNFetchBlob from 'react-native-fetch-blob';
+import { Buffer } from 'buffer';
+import AWS from 'aws-sdk';
+
 const {height, width} = Dimensions.get('window');
+
+// export default WithStorage(WithAuth(WithAPI(class Home extends React.Component {
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -56,6 +62,47 @@ class Home extends React.Component {
       );
   }
 
+  readFile = (urlLocal) => new Promise((resolve) => {
+    let data = '';
+
+    RNFetchBlob.fs.readStream(urlLocal, 'base64', 4095)
+      .then((ifstream) => {
+        ifstream.open()
+        ifstream.onData((chunk) => {
+          data += chunk
+        })
+        ifstream.onError((err) => {
+          console.log('oops', err)
+        })
+        ifstream.onEnd(() => {
+          resolve(data)
+        })
+      })
+  })
+
+
+  async handleUploadFile(urlLocal) {
+    const url = urlLocal;
+    const [, fileName, extension] = /.*\/(.+)\.(\w+)$/.exec(url);
+    const { IdentityId } = AWS.config.credentials.data;
+    const key = `private/${IdentityId}/${fileName}`;
+    let objectUrl = null;
+
+    try {
+      const data = await this.readFile(urlLocal);
+      const upload = await this.props.storage.putObject(key, new Buffer(data, 'base64'), 'image/jpeg');
+      // objectUrl = this.props.storage.getObjectUrl(upload.key);
+      // console.log(objectUrl);
+    } catch (err) {
+      console.warn(err);
+    }
+
+
+
+
+    this.setState({ objectUrl });
+  }
+
   takePicture(e) {
     const options = {};
     this.setState({
@@ -69,7 +116,8 @@ class Home extends React.Component {
           showPictureTaken: true,
           imageURL: data.path
         });
-        this.props.savePhotoUrl(data.path);
+        // this.props.savePhotoUrl(data.path);
+        this.handleUploadFile(data.path);
       })
       .catch(err => console.error(err));
     }
@@ -78,8 +126,6 @@ class Home extends React.Component {
   componentDidMount() {
     this.props.fetchStorage('app-data');
     console.log(this.props.appData);
-    // this.props.getAllKeys();
-    // this.props.fetchStorage('app-data');
   }
 
   render() {
@@ -106,6 +152,7 @@ class Home extends React.Component {
               ref={cam => this.camera = cam}
               style={styles.camera}
               captureTarget={Camera.constants.CaptureTarget.disk}
+              captureQuality={Camera.constants.CaptureQuality.photo}
               aspect={Camera.constants.Aspect.fill}>
             </Camera>
           </View>
@@ -119,6 +166,7 @@ class Home extends React.Component {
     );
   }
 };
+// })));
 
 const styles = StyleSheet.create({
   appContainer: {
@@ -164,7 +212,11 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   savePhotoUrl,
 }, dispatch);
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WithAPI(WithAuth(Home)));
+export default
+  WithAuth(
+    WithStorage(
+      WithAPI(
+        connect(mapStateToProps,mapDispatchToProps)(Home)
+      )
+    )
+  );
