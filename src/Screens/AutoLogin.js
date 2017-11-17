@@ -126,14 +126,9 @@ class AutoSignIn extends React.Component {
     this.setState({ showMFAPrompt: false });
   }
 
-  // componentDidMount() {
-  //   this.handleSignIn();
-  // }
-
   componentDidMount() {
-    // this.props.fetchStorage('app-data');
-    // console.log(this.props.appData);
-    // this.setState({isLoggedIn: })
+    this.props.fetchStorage('app-data');
+    this.handleSignIn();
   }
 
   render() {
