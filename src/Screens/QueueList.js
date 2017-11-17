@@ -1,10 +1,19 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { WithAPI } from '../lib/Categories/API/Components';
+import { WithAuth } from '../lib/Categories/Auth/Components';
+import { WithStorage } from '../lib/Categories/Storage/Components';
 import { View, Text, StyleSheet, StatusBar } from 'react-native';
 import { NavigationActions } from "react-navigation";
 import { List, ListItem, ListView } from 'react-native-elements';
-import { colors, fonts, othersTheme } from '../Utils/theme';
 import Icon from 'react-native-vector-icons/EvilIcons';
+
+import { colors, fonts, othersTheme } from '../Utils/theme';
 import TopBar from '../Components/QueueList/TopBar';
+import { fetchStorage } from '../actions/storageActions';
+import { savePhotoUrl } from '../actions/cameraActions';
+
 const list = [
   {
     name: '#1',
@@ -79,12 +88,12 @@ class QueueList extends React.Component {
         <List
           containerStyle={styles.list}>
           {
-            list.map((l, i) => (
+            this.props.appData.storage.data.photos.map((l, i) => (
               <ListItem
                 roundAvatar
-                avatar={{uri:l.avatar_url}}
+                avatar={{uri:l.url}}
                 key={i}
-                title={l.name}
+                title={`#${i+1}`}
               />
             ))
           }
@@ -112,4 +121,23 @@ const styles = StyleSheet.create({
 });
 
 
-export default QueueList;
+// export default QueueList;
+
+function mapStateToProps (state) {
+  return {
+    appData: state.appData
+  }
+}
+const mapDispatchToProps = dispatch => bindActionCreators({
+  fetchStorage,
+  savePhotoUrl,
+}, dispatch);
+
+export default
+  WithAuth(
+    WithStorage(
+      WithAPI(
+        connect(mapStateToProps,mapDispatchToProps)(QueueList)
+      )
+    )
+  );
