@@ -19,7 +19,7 @@ class TopBar extends React.Component {
         >
           <Icon name="close" size={30} color={colors.white} />
         </TouchableOpacity>
-        <Text style={styles.title}>Print Queue (5)</Text>
+        <Text style={styles.title}>Print Queue ({this.props.count})</Text>
         <TouchableOpacity
           style={styles.buttons}
         >
@@ -41,6 +41,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     margin: 0,
     padding: 0,
+    borderBottomColor: colors.gray,
+    borderBottomWidth: 1,
   },
   title: {
     color: colors.white,
