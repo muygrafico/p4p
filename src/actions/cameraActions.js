@@ -1,6 +1,7 @@
 import actionTypes from '../constants/actionTypesConstants';
 import { AsyncStorage } from 'react-native';
 import LocalStorage from '../lib/Categories/LocalStorage';
+import { fetchStorage } from '../actions/storageActions';
 
 export function startSavePhotoUrl() {
   return {
@@ -42,6 +43,7 @@ export const savePhotoUrl =
     // set new array with new photo into storage
     LocalStorage.setItem('photos', newArray);
 
+    dispatch(fetchStorage('app-data'))
     // debugging: check updated status
     console.log(LocalStorage.getItem('photos'));
 
