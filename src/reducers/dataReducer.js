@@ -9,7 +9,9 @@ const initialState = {
     error: false
   },
   storage: {
-    data: [],
+    data: [
+      {photos: []}
+    ],
     fetched: false,
     fetching: false,
     error: false
@@ -52,7 +54,9 @@ export default function Reducer (state = initialState, action) {
       return {
         ...state,
         storage: {
-          data: [],
+          data: [
+            {photos: []}
+          ],
           fetched: false,
           fetching: true,
           error: false
@@ -72,7 +76,9 @@ export default function Reducer (state = initialState, action) {
       return {
         ...state,
         storage: {
-          data: [],
+          data: [
+            {photos: []}
+          ],
           fetched: false,
           fetching: false,
           error: true
