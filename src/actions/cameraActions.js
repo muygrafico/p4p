@@ -36,13 +36,14 @@ export const savePhotoUrl =
     let query = LocalStorage.getItem('photos');
     // create new Photo object
     let photo = new Photo(value);
-    // if key 'photos' is not set, it will initialize it
-    query === undefined ? LocalStorage.setItem('photos', []) : null;
-    // add the new key to photos
-    newArray = [...query, photo];
-    // set new array with new photo into storage
-    LocalStorage.setItem('photos', newArray);
-
+    console.log(query);
+    query === undefined ?
+      // if key 'photos' is not set, it will initialize it
+      LocalStorage.setItem('photos', [photo])
+      :
+      // if key 'photos' is set, add the new key to photos
+      LocalStorage.setItem('photos', [...query, photo]);
+    
     dispatch(fetchStorage('app-data'))
     // debugging: check updated status
     console.log(LocalStorage.getItem('photos'));

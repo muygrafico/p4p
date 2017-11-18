@@ -37,11 +37,10 @@ import AWS from 'aws-sdk';
 
 const {height, width} = Dimensions.get('window');
 
-// export default WithStorage(WithAuth(WithAPI(class Home extends React.Component {
+
 class Home extends React.Component {
   constructor(props) {
     super(props);
-
     this.navigate = this.navigate.bind(this);
   }
 
@@ -80,7 +79,6 @@ class Home extends React.Component {
       })
   })
 
-
   async handleUploadFile(urlLocal) {
     const url = urlLocal;
     const [, fileName, extension] = /.*\/(.+)\.(\w+)$/.exec(url);
@@ -91,14 +89,9 @@ class Home extends React.Component {
     try {
       const data = await this.readFile(urlLocal);
       const upload = await this.props.storage.putObject(key, new Buffer(data, 'base64'), 'image/jpeg');
-      // objectUrl = this.props.storage.getObjectUrl(upload.key);
-      // console.log(objectUrl);
     } catch (err) {
       console.warn(err);
     }
-
-
-
 
     this.setState({ objectUrl });
   }
@@ -116,7 +109,7 @@ class Home extends React.Component {
           showPictureTaken: true,
           imageURL: data.path
         });
-        // this.props.savePhotoUrl(data.path);
+        this.props.savePhotoUrl(data.path);
         this.handleUploadFile(data.path);
       })
       .catch(err => console.error(err));
@@ -125,7 +118,6 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.props.fetchStorage('app-data');
-    console.log(this.props.appData);
   }
 
   render() {
@@ -166,7 +158,6 @@ class Home extends React.Component {
     );
   }
 };
-// })));
 
 const styles = StyleSheet.create({
   appContainer: {
