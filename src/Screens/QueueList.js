@@ -4,128 +4,84 @@ import { bindActionCreators } from 'redux';
 import { WithAPI } from '../lib/Categories/API/Components';
 import { WithAuth } from '../lib/Categories/Auth/Components';
 import { WithStorage } from '../lib/Categories/Storage/Components';
-import { View, Text, StyleSheet, StatusBar } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  StatusBar,
+  SectionList,
+  FlatList,
+  Image
+} from 'react-native';
 import { NavigationActions } from "react-navigation";
 import { List, ListItem, ListView } from 'react-native-elements';
 import Icon from 'react-native-vector-icons/EvilIcons';
 
 import { colors, fonts, othersTheme } from '../Utils/theme';
 import TopBar from '../Components/QueueList/TopBar';
+import Row from '../Components/QueueList/Row';
 import { fetchStorage } from '../actions/storageActions';
 import { savePhotoUrl } from '../actions/cameraActions';
-
-const list = [
-  {
-    name: '#1',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-  },
-  {
-    name: '#2',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#3',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#4',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#5',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#6',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#7',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#8',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/ladylexy/128.jpg',
-  },
-  {
-    name: '#9',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#10',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#11',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#12',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#13',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-  {
-    name: '#14',
-    avatar_url: 'https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg',
-  },
-]
-
+import _ from 'lodash';
 
 class QueueList extends React.Component {
-  goBack = () => {
-    this.props.navigation.goBack(null);
+
+  componentDidReceiveProps() {
+    this.props.fetchStorage('app-data');
   }
 
-  render(){
+  _renderItem = ({item, index}) => (
+    <Row
+      item={item}
+      index={index}
+      count={this._calculateIndex(index)}
+    />
+  );
+
+  _keyExtractor = (item, index) => index;
+
+  data(data) {
+    return _.reverse(data)
+  }
+
+  _calculateIndex(i) {
+    return this.props.photos.length - i
+  }
+
+  render() {
     return(
       <View style={styles.container}>
         <StatusBar hidden={true} />
-        <TopBar {...this.props} />
-
-        <List
-          containerStyle={styles.list}>
-          {
-            this.props.appData.storage.data.photos.map((l, i) => (
-              <ListItem
-                roundAvatar
-                avatar={{uri:l.url}}
-                key={i}
-                title={`#${i+1}`}
-              />
-            ))
-          }
-        </List>
+        <TopBar {...this.props}
+          count={this.props.photos.length}
+        />
+       <FlatList
+         style={styles.flatList}
+          data={_.reverse(this.props.photos)}
+          keyExtractor={this._keyExtractor}
+          renderItem={this._renderItem}
+        />
       </View>
     )
   }
 }
 
-
 const styles = StyleSheet.create({
   container: {
     width: '100%',
     height: '100%',
-    backgroundColor: colors.white,
+    backgroundColor: colors.black,
     alignItems: 'center',
   },
-  list: {
-    marginTop: 0,
-    width: '100%',
-    backgroundColor: colors.white,
-    margin: 0,
-    padding: 0,
+  flatList: {
+    width: '100%'
   },
 });
 
-
-// export default QueueList;
-
 function mapStateToProps (state) {
   return {
-    appData: state.appData
+    appData: state.appData,
+    photos: state.appData.storage.data.photos
   }
 }
 const mapDispatchToProps = dispatch => bindActionCreators({
@@ -133,11 +89,4 @@ const mapDispatchToProps = dispatch => bindActionCreators({
   savePhotoUrl,
 }, dispatch);
 
-export default
-  WithAuth(
-    WithStorage(
-      WithAPI(
-        connect(mapStateToProps,mapDispatchToProps)(QueueList)
-      )
-    )
-  );
+export default connect(mapStateToProps,mapDispatchToProps)(QueueList);
