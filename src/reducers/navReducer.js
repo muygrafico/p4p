@@ -1,12 +1,7 @@
 import { AppNavigator } from '../navigators/AppNavigator';
 
-// Start with two routes: Autologin, with the Splash screen on top.
-const firstAction = AppNavigator.router.getActionForPathAndParams('Autologin');
-const secondAction = AppNavigator.router.getActionForPathAndParams('Splash');
-const tempNavState = AppNavigator.router.getStateForAction(secondAction);
 const initialNavState = AppNavigator.router.getStateForAction(
-  firstAction,
-  tempNavState
+  AppNavigator.router.getActionForPathAndParams('Autologin')
 );
 
 export default function navReducer (state = initialNavState, action) {

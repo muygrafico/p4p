@@ -10,7 +10,6 @@ import CardStackStyleInterpolator from 'react-navigation/src/views/CardStack/Car
 import HomeScreen from '../Screens/Home';
 import QueueListScreen from '../Screens/QueueList';
 import AutoLoginScreen from '../Screens/AutoLogin';
-import SplashScreen from '../Screens/Splash';
 import { WithAPI } from '../lib/Categories/API/Components';
 import { WithAuth } from '../lib/Categories/Auth/Components';
 import { WithStorage } from '../lib/Categories/Storage/Components';
@@ -26,10 +25,6 @@ export const AppNavigator = StackNavigator({
   },
   Autologin: {
     screen: AutoLoginScreen,
-    navigationOptions: {header: null}
-  },
-  Splash: {
-    screen: SplashScreen,
     navigationOptions: {header: null}
   },
 },{
