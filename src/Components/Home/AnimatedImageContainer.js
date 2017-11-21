@@ -34,50 +34,89 @@ class AnimatedImageContainer extends React.Component {
     // this.props.startPictureAnimation();
     // this.props.onPictureAnimation();
 
-    Animated.parallel([
-      Animated.timing(this.state.topAnim, {
-        toValue: topAnimTarget,
-        duration: animationTime,
-        easing: Easing.cubic
-      }),
-      Animated.timing(this.state.widthAnim, {
-        toValue: 50,
-        duration: animationTime,
-        easing: Easing.cubic
-      }),
-      Animated.timing(this.state.heightAnim, {
-        toValue: othersTheme.thumbHeight,
-        duration: animationTime,
-        easing: Easing.cubic
-      }),
-      Animated.timing(this.state.borderAnim, {
-        toValue: 5,
-        duration: animationTime,
-        easing: Easing.cubic
-      }),
-      Animated.timing(this.state.leftAnim, {
-        toValue: 15,
-        duration: animationTime,
-        easing: Easing.cubic
-      }),
-    ], {stopTogether: true})
-    .start(
+    Animated.sequence([
+      Animated.parallel([
+        Animated.timing(this.state.topAnim, {
+          toValue: topAnimTarget,
+          duration: animationTime,
+          easing: Easing.cubic
+        }),
+        Animated.timing(this.state.widthAnim, {
+          toValue: 50,
+          duration: animationTime,
+          easing: Easing.cubic
+        }),
+        Animated.timing(this.state.heightAnim, {
+          toValue: othersTheme.thumbHeight,
+          duration: animationTime,
+          easing: Easing.cubic
+        }),
+        Animated.timing(this.state.borderAnim, {
+          toValue: 5,
+          duration: animationTime,
+          easing: Easing.cubic
+        }),
+        Animated.timing(this.state.leftAnim, {
+          toValue: 15,
+          duration: animationTime,
+          easing: Easing.cubic
+        }),
+      ]),
+    ]).start(
       (event) => {
         if (event.finished) {
-          this.props.endPictureAnimation()
-        }
+          TimerMixin.setTimeout(
+            () =>
+              this.props.endPictureAnimation(), 250
+          );
 
+        }
       }
     )
-
   }
 
+  //   Animated.parallel([
+  //     Animated.timing(this.state.topAnim, {
+  //       toValue: topAnimTarget,
+  //       duration: animationTime,
+  //       easing: Easing.cubic
+  //     }),
+  //     Animated.timing(this.state.widthAnim, {
+  //       toValue: 50,
+  //       duration: animationTime,
+  //       easing: Easing.cubic
+  //     }),
+  //     Animated.timing(this.state.heightAnim, {
+  //       toValue: othersTheme.thumbHeight,
+  //       duration: animationTime,
+  //       easing: Easing.cubic
+  //     }),
+  //     Animated.timing(this.state.borderAnim, {
+  //       toValue: 5,
+  //       duration: animationTime,
+  //       easing: Easing.cubic
+  //     }),
+  //     Animated.timing(this.state.leftAnim, {
+  //       toValue: 15,
+  //       duration: animationTime,
+  //       easing: Easing.cubic
+  //     }),
+  //   ], {stopTogether: true})
+  //   .start(
+  //     (event) => {
+  //       if (event.finished) {
+  //         this.props.endPictureAnimation()
+  //       }
+  //     }
+  //   )
+  // }
+
   componentDidMount() {
-    this.animate();
-    // TimerMixin.setTimeout(
-    //   () =>
-    //     this.animate(), 150
-    // );
+    // this.animate();
+    TimerMixin.setTimeout(
+      () =>
+        this.animate(), 100
+    );
   }
 
   render() {

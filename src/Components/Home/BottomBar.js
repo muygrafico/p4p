@@ -67,38 +67,13 @@ const styles = StyleSheet.create({
 
 class BottomBar extends React.Component {
 
-  state = {
-    pictureUrl: null,
-  }
-
-  // componentWillReceiveProps(nextProps) {
-  //   if nextProps.uiPicturePreview !== this.props.uiPicturePreview
-  // }
-
-  componentDidReceiveProps(nextProps) {
-      if (nextProps.uiPictureStatusAnimationEnd !== this.props.uiPictureStatusAnimationEnd)
-     {
-       console.log(nextProps);
-      // this.setState({pictureUrl: this.props.photos.slice(-1).pop().url})
-    }
-  }
-
   shouldComponentUpdate(nextProps, nextState) {
     return nextProps.uiPictureStatusAnimationEnd &&
       !nextProps.uiPictureStatusAnimationOngoin
   }
-  //
-  // componentDidMount() {
-  //   // this.props.uiPictureStatusAnimationEnd &&
-  //   this.props.photos && this.props.photos.length > 0 ?
-  //   this.setState({pictureUrl: this.props.photos.slice(-1).pop().url})
-  //   :
-  //   null
-  // }
 
   handleOnPress() {
     this.props.takePicture();
-    // this.setState({pictureUrl: this.props.photos.slice(-1).pop().url})
   }
 
   render() {
@@ -110,15 +85,14 @@ class BottomBar extends React.Component {
           this.props.photos.length > 0 &&
           <TouchableOpacity
             style={styles.thumbStatic}
-            onPress={() => navigate('QueueList', {name: 'Brent'})}
+            onPress={() => navigate('QueueList')}
             >
-            { this.props.photos && this.props.photos.length &&
-
+            { this.props.photos &&
+              this.props.photos.length &&
               <Image
                 source={{uri: this.props.photos.slice(-1).pop().url}}
                 style={styles.picture}
               />
-
             }
             <Text style={styles.thumbStaticText}>
               {this.props.photos.length}

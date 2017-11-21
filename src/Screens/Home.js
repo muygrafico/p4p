@@ -101,14 +101,13 @@ class Home extends React.Component {
     const options = {};
 
     if (!this.props.uiPictureStatusAnimationOngoin) {
-      // this.props.startPictureAnimation();
-      this.props.onPictureAnimation();
+      this.props.startPictureAnimation();
       this.camera.capture({metadata: options})
       .then((data) => {
-        // this.setState({
-        //   showPictureTaken: true,
-        //   imageURL: data.path
-        // });
+        this.setState({
+          imageURL: data.path
+        });
+        this.props.onPictureAnimation();
         this.props.savePhotoUrl(data.path);
         // this.handleUploadFile(data.path);
       })
@@ -120,21 +119,9 @@ class Home extends React.Component {
     this.props.fetchStorage('app-data');
   }
 
-  // componentWillReceiveProps(nextProps) {
-  //   console.log(nextProps);
-  //   return nextProps.uiPictureStatusAnimationEnd;
-  // }
-  //
-  // componentDidReceiveProps(prevProps) {
-  //   console.log(prevProps);
-  //   return this.props.uiPictureStatusAnimationEnd;
-  // }
-
   render() {
     const { session } = this.props;
-    // console.log(this.props.uiPictureStatusAnimationStart);
-    // console.log(this.props.uiPictureStatusAnimationOngoin);
-    // console.log(this.props.uiPictureStatusAnimationEnd);
+
     return (
       session ?
     (
@@ -142,11 +129,11 @@ class Home extends React.Component {
         <StatusBar hidden={true} />
         <View style={styles.livePreviewContainer}>
           {this.props.uiPictureStatusAnimationOngoin &&
-            this.props.photos && this.props.photos.length > 0 &&
+            this.state.imageURL &&
             <AnimatedImageContainer style={styles.AnimatedView}>
                <TouchableHighlight onPress={()=> this.navigate('QueueList')}>
                 <Image
-                  source={{uri: this.props.photos.slice(-1).pop().url}}
+                  source={{uri: this.state.imageURL}}
                   style={styles.picturePreview}
                 />
               </TouchableHighlight>
