@@ -75,21 +75,26 @@ class BottomBar extends React.Component {
   //   if nextProps.uiPicturePreview !== this.props.uiPicturePreview
   // }
 
-  // componentDidReceiveProps(nextProps) {
-  //   console.log(nextProps);
-  //   if (
-  //     nextProps.uiPicturePreviewAnimationEnd === true
-  //   ) {
-  //     this.setState({pictureUrl: this.props.photos.slice(-1).pop().url})
-  //   }
-  // }
-
-  componentDidMount() {
-    this.props.photos && this.props.photos.length > 0 ?
-    this.setState({pictureUrl: this.props.photos.slice(-1).pop().url})
-    :
-    null
+  componentDidReceiveProps(nextProps) {
+      if (nextProps.uiPictureStatusAnimationEnd !== this.props.uiPictureStatusAnimationEnd)
+     {
+       console.log(nextProps);
+      // this.setState({pictureUrl: this.props.photos.slice(-1).pop().url})
+    }
   }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    return nextProps.uiPictureStatusAnimationEnd &&
+      !nextProps.uiPictureStatusAnimationOngoin
+  }
+  //
+  // componentDidMount() {
+  //   // this.props.uiPictureStatusAnimationEnd &&
+  //   this.props.photos && this.props.photos.length > 0 ?
+  //   this.setState({pictureUrl: this.props.photos.slice(-1).pop().url})
+  //   :
+  //   null
+  // }
 
   handleOnPress() {
     this.props.takePicture();
@@ -107,11 +112,13 @@ class BottomBar extends React.Component {
             style={styles.thumbStatic}
             onPress={() => navigate('QueueList', {name: 'Brent'})}
             >
-            { this.state.pictureUrl &&
+            { this.props.photos && this.props.photos.length &&
+
               <Image
-                source={{uri: this.state.pictureUrl}}
+                source={{uri: this.props.photos.slice(-1).pop().url}}
                 style={styles.picture}
               />
+
             }
             <Text style={styles.thumbStaticText}>
               {this.props.photos.length}
@@ -132,15 +139,4 @@ class BottomBar extends React.Component {
   }
 }
 
-// export default BottomBar;
-
-function mapStateToProps (state) {
-  return {
-    appData: state.appData,
-    photos: state.appData.storage.data.photos,
-    uiPicturePreviewAnimationEnd: state.ui.picturePreview.animationEnd
-  }
-}
-const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
-
-export default connect(mapStateToProps,mapDispatchToProps)(BottomBar);
+export default BottomBar;

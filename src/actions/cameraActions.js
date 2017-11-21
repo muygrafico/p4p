@@ -36,7 +36,6 @@ export const savePhotoUrl =
     let query = LocalStorage.getItem('photos');
     // create new Photo object
     let photo = new Photo(value);
-    console.log(query);
     query === undefined ?
       // if key 'photos' is not set, it will initialize it
       LocalStorage.setItem('photos', [photo])
@@ -46,13 +45,19 @@ export const savePhotoUrl =
 
     dispatch(fetchStorage('app-data'))
     // debugging: check updated status
-    console.log(LocalStorage.getItem('photos'));
+    // console.log(LocalStorage.getItem('photos'));
 
   };
 
   export function startPictureAnimation() {
     return {
       type: actionTypes.START_PICTURE_ANIMATION
+    }
+  };
+
+  export function onPictureAnimation() {
+    return {
+      type: actionTypes.ON_PICTURE_ANIMATION
     }
   };
 

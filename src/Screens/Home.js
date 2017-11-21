@@ -29,7 +29,8 @@ import { WithAuth } from '../lib/Categories/Auth/Components';
 import { WithStorage } from '../lib/Categories/Storage/Components';
 
 import { fetchStorage } from '../actions/storageActions';
-import { savePhotoUrl } from '../actions/cameraActions';
+import { savePhotoUrl, startPictureAnimation, onPictureAnimation } from '../actions/cameraActions';
+
 
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Buffer } from 'buffer';
@@ -97,22 +98,19 @@ class Home extends React.Component {
   }
 
   takePicture(e) {
-
-    this.setState({
-      showPictureTaken: false
-    });
-
     const options = {};
 
-    if (!this.state.showPictureTaken) {
+    if (!this.props.uiPictureStatusAnimationOngoin) {
+      // this.props.startPictureAnimation();
+      this.props.onPictureAnimation();
       this.camera.capture({metadata: options})
       .then((data) => {
-        this.setState({
-          showPictureTaken: true,
-          imageURL: data.path
-        });
+        // this.setState({
+        //   showPictureTaken: true,
+        //   imageURL: data.path
+        // });
         this.props.savePhotoUrl(data.path);
-        this.handleUploadFile(data.path);
+        // this.handleUploadFile(data.path);
       })
       .catch(err => console.error(err));
     }
@@ -124,23 +122,31 @@ class Home extends React.Component {
 
   // componentWillReceiveProps(nextProps) {
   //   console.log(nextProps);
-  //   this.setState({ showPictureTaken: false })
+  //   return nextProps.uiPictureStatusAnimationEnd;
+  // }
+  //
+  // componentDidReceiveProps(prevProps) {
+  //   console.log(prevProps);
+  //   return this.props.uiPictureStatusAnimationEnd;
   // }
 
   render() {
     const { session } = this.props;
-
+    // console.log(this.props.uiPictureStatusAnimationStart);
+    // console.log(this.props.uiPictureStatusAnimationOngoin);
+    // console.log(this.props.uiPictureStatusAnimationEnd);
     return (
       session ?
     (
       <View style={styles.appContainer}>
         <StatusBar hidden={true} />
         <View style={styles.livePreviewContainer}>
-          {this.state.showPictureTaken &&
+          {this.props.uiPictureStatusAnimationOngoin &&
+            this.props.photos && this.props.photos.length > 0 &&
             <AnimatedImageContainer style={styles.AnimatedView}>
                <TouchableHighlight onPress={()=> this.navigate('QueueList')}>
                 <Image
-                  source={{uri: this.state.imageURL}}
+                  source={{uri: this.props.photos.slice(-1).pop().url}}
                   style={styles.picturePreview}
                 />
               </TouchableHighlight>
@@ -209,12 +215,16 @@ function mapStateToProps (state) {
   return {
     appData: state.appData,
     photos: state.appData.storage.data.photos,
-    uiPictureStatusAnimationOngoin: state.ui.picturePreview.animationOngoin
+    uiPictureStatusAnimationStart: state.ui.picturePreview.animationStart,
+    uiPictureStatusAnimationOngoin: state.ui.picturePreview.animationOngoin,
+    uiPictureStatusAnimationEnd: state.ui.picturePreview.animationEnd,
   }
 }
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchStorage,
   savePhotoUrl,
+  startPictureAnimation,
+  onPictureAnimation,
 }, dispatch);
 
 export default

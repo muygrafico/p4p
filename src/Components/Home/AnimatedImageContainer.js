@@ -8,11 +8,18 @@ import {
 import { colors, fonts, othersTheme } from '../../Utils/theme';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { startPictureAnimation, endPictureAnimation } from '../../actions/cameraActions';
+import {
+  startPictureAnimation,
+  onPictureAnimation,
+  endPictureAnimation,
+ } from '../../actions/cameraActions';
 import TimerMixin from 'react-timer-mixin';
 
 const {height, width} = Dimensions.get('window');
 const animationTime = 400;
+const topAnimTarget =
+  height - (othersTheme.thumbHeight +
+    (othersTheme.bottomBarHeight - othersTheme.thumbHeight)/2) - 3;
 
 class AnimatedImageContainer extends React.Component {
   state = {
@@ -24,44 +31,53 @@ class AnimatedImageContainer extends React.Component {
   }
 
   animate() {
-    this.props.startPictureAnimation();
-    Animated.sequence([
-      Animated.parallel([
-        Animated.timing(this.state.topAnim, {
-          toValue: height - (othersTheme.thumbHeight + (othersTheme.bottomBarHeight - othersTheme.thumbHeight)/2) - 3,
-          duration: animationTime,
-          easing: Easing.cubic
-        }),
-        Animated.timing(this.state.widthAnim, {
-          toValue: 50,
-          duration: animationTime,
-          easing: Easing.cubic
-        }),
-        Animated.timing(this.state.heightAnim, {
-          toValue: othersTheme.thumbHeight,
-          duration: animationTime,
-          easing: Easing.cubic
-        }),
-        Animated.timing(this.state.borderAnim, {
-          toValue: 5,
-          duration: animationTime,
-          easing: Easing.cubic
-        }),
-        Animated.timing(this.state.leftAnim, {
-          toValue: 15,
-          duration: animationTime,
-          easing: Easing.cubic
-        }),
-      ]),
-    ]).start(() => this.props.endPictureAnimation());
+    // this.props.startPictureAnimation();
+    // this.props.onPictureAnimation();
+
+    Animated.parallel([
+      Animated.timing(this.state.topAnim, {
+        toValue: topAnimTarget,
+        duration: animationTime,
+        easing: Easing.cubic
+      }),
+      Animated.timing(this.state.widthAnim, {
+        toValue: 50,
+        duration: animationTime,
+        easing: Easing.cubic
+      }),
+      Animated.timing(this.state.heightAnim, {
+        toValue: othersTheme.thumbHeight,
+        duration: animationTime,
+        easing: Easing.cubic
+      }),
+      Animated.timing(this.state.borderAnim, {
+        toValue: 5,
+        duration: animationTime,
+        easing: Easing.cubic
+      }),
+      Animated.timing(this.state.leftAnim, {
+        toValue: 15,
+        duration: animationTime,
+        easing: Easing.cubic
+      }),
+    ], {stopTogether: true})
+    .start(
+      (event) => {
+        if (event.finished) {
+          this.props.endPictureAnimation()
+        }
+
+      }
+    )
 
   }
 
   componentDidMount() {
-    TimerMixin.setTimeout(
-      () =>
-        this.animate(), 150
-    );
+    this.animate();
+    // TimerMixin.setTimeout(
+    //   () =>
+    //     this.animate(), 150
+    // );
   }
 
   render() {
@@ -99,6 +115,7 @@ function mapStateToProps (state) {
 }
 const mapDispatchToProps = dispatch => bindActionCreators({
   startPictureAnimation,
+  onPictureAnimation,
   endPictureAnimation,
 }, dispatch);
 

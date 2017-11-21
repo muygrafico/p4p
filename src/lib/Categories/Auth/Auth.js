@@ -42,7 +42,7 @@ const init = async function syncCognitoStorage() {
 
   const session = await new Promise(resolve => getSignInUserSession((e, s) => resolve(e ? null : s)));
 
-  console.log('Auth init', !!session);
+  // console.log('Auth init', !!session);
 };
 
 /**********************

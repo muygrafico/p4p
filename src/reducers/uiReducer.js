@@ -3,8 +3,8 @@ import actionTypes from '../constants/actionTypesConstants';
 const initialState = {
   picturePreview: {
     animationStart: false,
-    animationEnd: false,
-    animationEnd: false,
+    animationOngoin: false,
+    animationEnd: true,
   }
 };
 
@@ -23,7 +23,7 @@ export default function uiReducer (state = initialState, action) {
       return {
         ...state,
         picturePreview: {
-          animationStart: false,
+          animationStart: true,
           animationOngoin: true,
           animationEnd: false,
         }

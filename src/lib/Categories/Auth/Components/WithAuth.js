@@ -16,7 +16,7 @@ import LocalStorage from '../../LocalStorage';
 import Auth from '../index';
 
 /**
- * @param {React.Component} WrappedComponent 
+ * @param {React.Component} WrappedComponent
  * @returns {React.Component}
  */
 function WithAuth(WrappedComponent) {
@@ -59,7 +59,7 @@ function WithAuth(WrappedComponent) {
 
     render() {
       const { ready, session } = this.state;
-      console.log('Rendering HOC', ready, !!session);
+      // console.log('Rendering HOC', ready, !!session);
       const {
         onSignIn,
         onSignUp,

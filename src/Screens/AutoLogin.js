@@ -68,7 +68,7 @@ class AutoSignIn extends React.Component {
       const session = await new Promise((resolve) => {
         auth.handleSignIn(username, password, auth.loginCallbackFactory({
           onSuccess(session) {
-            console.log('loginCallbacks.onSuccess', session);
+            // console.log('loginCallbacks.onSuccess', session);
             resolve(session);
             this.navigate();
           },

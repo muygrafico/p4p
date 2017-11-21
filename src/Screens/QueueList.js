@@ -25,9 +25,9 @@ import { savePhotoUrl } from '../actions/cameraActions';
 import _ from 'lodash';
 
 class QueueList extends React.Component {
-  goBack = () => {
-    this.props.navigation.goBack(null);
-  }
+  // goBack = () => {
+  //   this.props.navigation.goBack(null);
+  // }
 
   componentDidReceiveProps() {
     this.props.fetchStorage('app-data');
@@ -52,12 +52,13 @@ class QueueList extends React.Component {
   }
 
   render() {
+
     return(
       <View style={styles.container}>
         <StatusBar hidden={true} />
         <TopBar
-          {...this.props}
           count={this.props.photos.length}
+          {...this.props}
         />
         <FlatList
           style={styles.flatList}

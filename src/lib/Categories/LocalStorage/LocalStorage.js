@@ -47,12 +47,12 @@ class MemoryStorage {
   /**
    * Stores an item in the local storage
    *
-   * @param {string} key 
-   * @param {string} value 
+   * @param {string} key
+   * @param {string} value
    * @returns {string}
    */
   setItem(key, value) {
-    console.log('SET', key);
+    // console.log('SET', key);
     this.obj[key] = value;
 
     queueSetItem(this.obj);
@@ -63,21 +63,21 @@ class MemoryStorage {
   /**
    * Retrieves an item from the local storage
    *
-   * @param {string} key 
+   * @param {string} key
    * @returns {string}
    */
   getItem(key) {
-    console.log('GET', key);
+    // console.log('GET', key);
     return Object.prototype.hasOwnProperty.call(this.obj, key) ? this.obj[key] : undefined;
   }
 
   /**
    * Removes an item from local storage
    *
-   * @param {string} key 
+   * @param {string} key
    */
   removeItem(key) {
-    console.log('REMOVE', key);
+    // console.log('REMOVE', key);
     delete this.obj[key];
 
     queueSetItem(this.obj);
@@ -88,7 +88,7 @@ class MemoryStorage {
    * Clears the app local storage
    */
   clear() {
-    AsyncStorage.clear('app-data', console.log);
+    // AsyncStorage.clear('app-data', console.log);
     this.obj = {};
   }
 }
