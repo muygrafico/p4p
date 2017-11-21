@@ -9,9 +9,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { NavigationActions } from "react-navigation";
 import { colors, fonts, othersTheme } from '../../Utils/theme';
+const {height, width} = Dimensions.get('window');
 
-const stylesBottom = StyleSheet.create({
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+const styles = StyleSheet.create({
   circleContainer: {
     alignItems:'center',
     justifyContent:'center',
@@ -40,26 +45,102 @@ const stylesBottom = StyleSheet.create({
     fontFamily: fonts.main,
     letterSpacing: .5,
     paddingTop: 10,
+  },
+  thumbStatic: {
+    position: 'absolute',
+    left: 15,
+    top: (othersTheme.bottomBarHeight - othersTheme.thumbHeight)/2 - 5,
+  },
+  thumbStaticText: {
+    color: colors.white,
+    textAlign: 'center',
+    fontSize: 11,
+    marginTop: 5
+  },
+  picture: {
+    width: 50,
+    height: 70,
+    borderWidth: 5,
+    borderColor: colors.white
   }
 });
 
 class BottomBar extends React.Component {
+
+  state = {
+    pictureUrl: null,
+  }
+
+  // componentWillReceiveProps(nextProps) {
+  //   if nextProps.uiPicturePreview !== this.props.uiPicturePreview
+  // }
+
+  // componentDidReceiveProps(nextProps) {
+  //   console.log(nextProps);
+  //   if (
+  //     nextProps.uiPicturePreviewAnimationEnd === true
+  //   ) {
+  //     this.setState({pictureUrl: this.props.photos.slice(-1).pop().url})
+  //   }
+  // }
+
+  componentDidMount() {
+    this.props.photos && this.props.photos.length > 0 ?
+    this.setState({pictureUrl: this.props.photos.slice(-1).pop().url})
+    :
+    null
+  }
+
   handleOnPress() {
     this.props.takePicture();
+    // this.setState({pictureUrl: this.props.photos.slice(-1).pop().url})
   }
+
   render() {
+    const {navigate} = this.props.navigation;
+
     return (
-      <View style={stylesBottom.bottomBar}>
+      <View style={styles.bottomBar}>
+        {this.props.photos &&
+          this.props.photos.length > 0 &&
+          <TouchableOpacity
+            style={styles.thumbStatic}
+            onPress={() => navigate('QueueList', {name: 'Brent'})}
+            >
+            { this.state.pictureUrl &&
+              <Image
+                source={{uri: this.state.pictureUrl}}
+                style={styles.picture}
+              />
+            }
+            <Text style={styles.thumbStaticText}>
+              {this.props.photos.length}
+            </Text>
+          </TouchableOpacity>
+        }
         <TouchableOpacity
-          style={stylesBottom.circleContainer}
+          style={styles.circleContainer}
           onPress={() => this.handleOnPress()}
         >
-          <Image style={stylesBottom.cameraButton} source={require('../../img/camera-button.png')} />
-          <Text style={stylesBottom.buttonText}>push for photo</Text>
+          <Image style={styles.cameraButton}
+            source={require('../../img/camera-button.png')}
+          />
+          <Text style={styles.buttonText}>push for photo</Text>
         </TouchableOpacity>
       </View>
     )
   }
 }
 
-export default BottomBar;
+// export default BottomBar;
+
+function mapStateToProps (state) {
+  return {
+    appData: state.appData,
+    photos: state.appData.storage.data.photos,
+    uiPicturePreviewAnimationEnd: state.ui.picturePreview.animationEnd
+  }
+}
+const mapDispatchToProps = dispatch => bindActionCreators({}, dispatch);
+
+export default connect(mapStateToProps,mapDispatchToProps)(BottomBar);

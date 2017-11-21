@@ -6,6 +6,9 @@ import {
   Easing
 } from 'react-native';
 import { colors, fonts, othersTheme } from '../../Utils/theme';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { startPictureAnimation, endPictureAnimation } from '../../actions/cameraActions';
 import TimerMixin from 'react-timer-mixin';
 
 const {height, width} = Dimensions.get('window');
@@ -21,10 +24,11 @@ class AnimatedImageContainer extends React.Component {
   }
 
   animate() {
+    this.props.startPictureAnimation();
     Animated.sequence([
       Animated.parallel([
         Animated.timing(this.state.topAnim, {
-          toValue: height - 85,
+          toValue: height - (othersTheme.thumbHeight + (othersTheme.bottomBarHeight - othersTheme.thumbHeight)/2) - 3,
           duration: animationTime,
           easing: Easing.cubic
         }),
@@ -34,7 +38,7 @@ class AnimatedImageContainer extends React.Component {
           easing: Easing.cubic
         }),
         Animated.timing(this.state.heightAnim, {
-          toValue: 70,
+          toValue: othersTheme.thumbHeight,
           duration: animationTime,
           easing: Easing.cubic
         }),
@@ -49,7 +53,8 @@ class AnimatedImageContainer extends React.Component {
           easing: Easing.cubic
         }),
       ]),
-    ]).start();
+    ]).start(() => this.props.endPictureAnimation());
+
   }
 
   componentDidMount() {
@@ -87,4 +92,14 @@ class AnimatedImageContainer extends React.Component {
   }
 }
 
-export default AnimatedImageContainer;
+// export default AnimatedImageContainer;
+
+function mapStateToProps (state) {
+  return {}
+}
+const mapDispatchToProps = dispatch => bindActionCreators({
+  startPictureAnimation,
+  endPictureAnimation,
+}, dispatch);
+
+export default connect(mapStateToProps,mapDispatchToProps)(AnimatedImageContainer);

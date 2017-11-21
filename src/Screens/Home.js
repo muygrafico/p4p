@@ -37,7 +37,6 @@ import AWS from 'aws-sdk';
 
 const {height, width} = Dimensions.get('window');
 
-
 class Home extends React.Component {
   constructor(props) {
     super(props);
@@ -50,15 +49,15 @@ class Home extends React.Component {
   }
 
   navigate (where) {
-      let navigateToAutoLogin =
-        NavigationActions.navigate({
-          routeName: where
-        });
+    let navigateToAutoLogin =
+      NavigationActions.navigate({
+        routeName: where
+      });
 
-      TimerMixin.setTimeout(
-        () =>
-          this.props.navigation.dispatch(navigateToAutoLogin), 150
-      );
+    TimerMixin.setTimeout(
+      () =>
+      this.props.navigation.dispatch(navigateToAutoLogin), 150
+    );
   }
 
   readFile = (urlLocal) => new Promise((resolve) => {
@@ -93,14 +92,17 @@ class Home extends React.Component {
       console.warn(err);
     }
 
-    this.setState({ objectUrl });
+    // TODO check if should load local or server images
+    // this.setState({ objectUrl });
   }
 
   takePicture(e) {
-    const options = {};
+
     this.setState({
       showPictureTaken: false
-    })
+    });
+
+    const options = {};
 
     if (!this.state.showPictureTaken) {
       this.camera.capture({metadata: options})
@@ -120,8 +122,14 @@ class Home extends React.Component {
     this.props.fetchStorage('app-data');
   }
 
+  // componentWillReceiveProps(nextProps) {
+  //   console.log(nextProps);
+  //   this.setState({ showPictureTaken: false })
+  // }
+
   render() {
     const { session } = this.props;
+
     return (
       session ?
     (
@@ -150,7 +158,11 @@ class Home extends React.Component {
           </View>
 
         </View>
-        <BottomBar takePicture={this.takePicture.bind(this)} />
+
+        <BottomBar
+          takePicture={this.takePicture.bind(this)}
+          {...this.props}
+        />
       </View>
     )
      :
@@ -195,7 +207,9 @@ const styles = StyleSheet.create({
 
 function mapStateToProps (state) {
   return {
-    appData: state.appData
+    appData: state.appData,
+    photos: state.appData.storage.data.photos,
+    uiPictureStatusAnimationOngoin: state.ui.picturePreview.animationOngoin
   }
 }
 const mapDispatchToProps = dispatch => bindActionCreators({

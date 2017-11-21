@@ -43,9 +43,21 @@ export const savePhotoUrl =
       :
       // if key 'photos' is set, add the new key to photos
       LocalStorage.setItem('photos', [...query, photo]);
-    
+
     dispatch(fetchStorage('app-data'))
     // debugging: check updated status
     console.log(LocalStorage.getItem('photos'));
 
+  };
+
+  export function startPictureAnimation() {
+    return {
+      type: actionTypes.START_PICTURE_ANIMATION
+    }
+  };
+
+  export function endPictureAnimation() {
+    return {
+      type: actionTypes.END_PICTURE_ANIMATION
+    }
   };
