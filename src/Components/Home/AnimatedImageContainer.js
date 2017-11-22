@@ -19,7 +19,7 @@ const {height, width} = Dimensions.get('window');
 const animationTime = 400;
 const topAnimTarget =
   height - (othersTheme.thumbHeight +
-    (othersTheme.bottomBarHeight - othersTheme.thumbHeight)/2) - 3;
+    (othersTheme.bottomBarHeight - othersTheme.thumbHeight)/2) - 5;
 
 class AnimatedImageContainer extends React.Component {
   state = {
@@ -31,10 +31,6 @@ class AnimatedImageContainer extends React.Component {
   }
 
   animate() {
-    // this.props.startPictureAnimation();
-    // this.props.onPictureAnimation();
-
-    Animated.sequence([
       Animated.parallel([
         Animated.timing(this.state.topAnim, {
           toValue: topAnimTarget,
@@ -61,61 +57,21 @@ class AnimatedImageContainer extends React.Component {
           duration: animationTime,
           easing: Easing.cubic
         }),
-      ]),
-    ]).start(
+      ]).start(
       (event) => {
         if (event.finished) {
           TimerMixin.setTimeout(
             () =>
               this.props.endPictureAnimation(), 250
           );
-
         }
       }
     )
   }
 
-  //   Animated.parallel([
-  //     Animated.timing(this.state.topAnim, {
-  //       toValue: topAnimTarget,
-  //       duration: animationTime,
-  //       easing: Easing.cubic
-  //     }),
-  //     Animated.timing(this.state.widthAnim, {
-  //       toValue: 50,
-  //       duration: animationTime,
-  //       easing: Easing.cubic
-  //     }),
-  //     Animated.timing(this.state.heightAnim, {
-  //       toValue: othersTheme.thumbHeight,
-  //       duration: animationTime,
-  //       easing: Easing.cubic
-  //     }),
-  //     Animated.timing(this.state.borderAnim, {
-  //       toValue: 5,
-  //       duration: animationTime,
-  //       easing: Easing.cubic
-  //     }),
-  //     Animated.timing(this.state.leftAnim, {
-  //       toValue: 15,
-  //       duration: animationTime,
-  //       easing: Easing.cubic
-  //     }),
-  //   ], {stopTogether: true})
-  //   .start(
-  //     (event) => {
-  //       if (event.finished) {
-  //         this.props.endPictureAnimation()
-  //       }
-  //     }
-  //   )
-  // }
-
   componentDidMount() {
-    // this.animate();
     TimerMixin.setTimeout(
-      () =>
-        this.animate(), 100
+      () => this.animate(), 100
     );
   }
 
@@ -147,11 +103,10 @@ class AnimatedImageContainer extends React.Component {
   }
 }
 
-// export default AnimatedImageContainer;
-
 function mapStateToProps (state) {
   return {}
 }
+
 const mapDispatchToProps = dispatch => bindActionCreators({
   startPictureAnimation,
   onPictureAnimation,

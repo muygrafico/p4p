@@ -25,9 +25,6 @@ import { savePhotoUrl } from '../actions/cameraActions';
 import _ from 'lodash';
 
 class QueueList extends React.Component {
-  // goBack = () => {
-  //   this.props.navigation.goBack(null);
-  // }
 
   componentDidReceiveProps() {
     this.props.fetchStorage('app-data');
