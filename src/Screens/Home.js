@@ -31,7 +31,6 @@ import { WithStorage } from '../lib/Categories/Storage/Components';
 import { fetchStorage } from '../actions/storageActions';
 import { savePhotoUrl, startPictureAnimation, onPictureAnimation } from '../actions/cameraActions';
 
-
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Buffer } from 'buffer';
 import AWS from 'aws-sdk';
@@ -61,53 +60,53 @@ class Home extends React.Component {
     );
   }
 
-  readFile = (urlLocal) => new Promise((resolve) => {
-    let data = '';
+  // readFile = (urlLocal) => new Promise((resolve) => {
+  //   let data = '';
+  //
+  //   RNFetchBlob.fs.readStream(urlLocal, 'base64', 4095)
+  //     .then((ifstream) => {
+  //       ifstream.open()
+  //       ifstream.onData((chunk) => {
+  //         data += chunk
+  //       })
+  //       ifstream.onError((err) => {
+  //         console.log('oops', err)
+  //       })
+  //       ifstream.onEnd(() => {
+  //         resolve(data)
+  //       })
+  //     })
+  // })
 
-    RNFetchBlob.fs.readStream(urlLocal, 'base64', 4095)
-      .then((ifstream) => {
-        ifstream.open()
-        ifstream.onData((chunk) => {
-          data += chunk
-        })
-        ifstream.onError((err) => {
-          console.log('oops', err)
-        })
-        ifstream.onEnd(() => {
-          resolve(data)
-        })
-      })
-  })
-
-  async handleUploadFile(urlLocal) {
-    const url = urlLocal;
-    const [, fileName, extension] = /.*\/(.+)\.(\w+)$/.exec(url);
-    const { IdentityId } = AWS.config.credentials.data;
-    const key = `private/${IdentityId}/${fileName}`;
-    let objectUrl = null;
-
-    try {
-      const data = await this.readFile(urlLocal);
-      const upload = await this.props.storage.putObject(key, new Buffer(data, 'base64'), 'image/jpeg');
-    } catch (err) {
-      console.warn(err);
-    }
-
-    // TODO check if should load local or server images
-    // this.setState({ objectUrl });
-  }
+  // async handleUploadFile(urlLocal) {
+  //   const url = urlLocal;
+  //   const [, fileName, extension] = /.*\/(.+)\.(\w+)$/.exec(url);
+  //   const { IdentityId } = AWS.config.credentials.data;
+  //   const key = `private/${IdentityId}/${fileName}`;
+  //   let objectUrl = null;
+  //
+  //   try {
+  //     const data = await this.readFile(urlLocal);
+  //     const upload = await this.props.storage.putObject(key, new Buffer(data, 'base64'), 'image/jpeg');
+  //   } catch (err) {
+  //     console.warn(err);
+  //   }
+  //
+  //   // TODO check if should load local or server images
+  //   // this.setState({ objectUrl });
+  // }
 
   takePicture(e) {
     const options = {};
 
     if (!this.props.uiPictureStatusAnimationOngoin) {
-      this.props.startPictureAnimation();
+      // this.props.startPictureAnimation();
       this.camera.capture({metadata: options})
       .then((data) => {
         this.setState({
           imageURL: data.path
         });
-        this.props.onPictureAnimation();
+        // this.props.onPictureAnimation();
         this.props.savePhotoUrl(data.path);
         // this.handleUploadFile(data.path);
       })
@@ -140,15 +139,30 @@ class Home extends React.Component {
             </AnimatedImageContainer>
           }
 
-          <View>
-            <Camera
-              ref={cam => this.camera = cam}
-              style={styles.camera}
-              captureTarget={Camera.constants.CaptureTarget.disk}
-              captureQuality={Camera.constants.CaptureQuality.photo}
-              aspect={Camera.constants.Aspect.fill}>
-            </Camera>
-          </View>
+          {/* <AnimatedImageContainer style={styles.AnimatedView}>
+             <TouchableHighlight onPress={()=> this.navigate('QueueList')}>
+              <View style={{
+                  display: 'flex',
+                  backgroundColor: 'blue',
+                  height: height - (othersTheme.bottomBarHeight),
+                  width: width,
+                  position: 'relative',
+                  borderWidth: 15,
+                  borderColor: colors.white
+                }}
+              />
+            </TouchableHighlight>
+          </AnimatedImageContainer> */}
+
+
+          <Camera
+            ref={cam => this.camera = cam}
+            style={styles.camera}
+            captureTarget={Camera.constants.CaptureTarget.disk}
+            captureQuality={Camera.constants.CaptureQuality.photo}
+            aspect={Camera.constants.Aspect.fill}>
+          </Camera>
+
 
         </View>
 
@@ -166,29 +180,31 @@ class Home extends React.Component {
 
 const styles = StyleSheet.create({
   appContainer: {
-    width: '100%',
-    height: '100%',
+    width,
+    height,
   },
   livePreviewContainer: {
     height: height - (othersTheme.bottomBarHeight + othersTheme.marginsx2),
-    width:'100%',
+    width,
     zIndex: 2,
-  },
-  livePreview: {
-    borderWidth: othersTheme.margins,
+    position: 'absolute'
   },
   AnimatedView: {
     borderColor: colors.white,
-    borderWidth: othersTheme.margins,
+    // borderWidth: othersTheme.margins,
     height: height - othersTheme.bottomBarHeight,
     position: 'absolute',
     width: width,
     zIndex: 1,
   },
   picturePreview: {
-    height: '100%',
-    position: 'relative',
-    width: '100%',
+    // display: 'flex',
+    // backgroundColor: 'blue',
+    height: height - (othersTheme.bottomBarHeight),
+    width: width,
+    // position: 'absolute',
+    borderWidth: 15,
+    borderColor: colors.white
   },
   camera: {
     left: othersTheme.margins,

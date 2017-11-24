@@ -16,53 +16,29 @@ import {
 import TimerMixin from 'react-timer-mixin';
 
 const {height, width} = Dimensions.get('window');
-const animationTime = 400;
-const topAnimTarget =
-  height - (othersTheme.thumbHeight +
-    (othersTheme.bottomBarHeight - othersTheme.thumbHeight)/2) - 5;
 
 class AnimatedImageContainer extends React.Component {
   state = {
-    topAnim: new Animated.Value(0),
-    widthAnim: new Animated.Value(width),
-    heightAnim: new Animated.Value(height - othersTheme.bottomBarHeight),
-    borderAnim: new Animated.Value(othersTheme.margins),
-    leftAnim: new Animated.Value(0),
+    valueScale: new Animated.Value(0),
+    valueTranslateX: new Animated.Value(0),
+    valueTranslateY: new Animated.Value(0),
   }
 
   animate() {
-      Animated.parallel([
-        Animated.timing(this.state.topAnim, {
-          toValue: topAnimTarget,
-          duration: animationTime,
-          easing: Easing.cubic
-        }),
-        Animated.timing(this.state.widthAnim, {
-          toValue: 50,
-          duration: animationTime,
-          easing: Easing.cubic
-        }),
-        Animated.timing(this.state.heightAnim, {
-          toValue: othersTheme.thumbHeight,
-          duration: animationTime,
-          easing: Easing.cubic
-        }),
-        Animated.timing(this.state.borderAnim, {
-          toValue: 5,
-          duration: animationTime,
-          easing: Easing.cubic
-        }),
-        Animated.timing(this.state.leftAnim, {
-          toValue: 15,
-          duration: animationTime,
-          easing: Easing.cubic
-        }),
-      ]).start(
+    // Animated.timing(this.state.valueScale, {
+    //   toValue: 1, duration: 500, useNativeDriver: true
+    // })
+    Animated.parallel([
+      Animated.timing(this.state.valueTranslateY, { toValue: 1, duration: 500, useNativeDriver: true }),
+      Animated.timing(this.state.valueTranslateX, { toValue: 1, duration: 500, useNativeDriver: true }),
+      Animated.timing(this.state.valueScale, { toValue: 1, duration: 500, useNativeDriver: true }),
+    ])
+    .start(
       (event) => {
         if (event.finished) {
           TimerMixin.setTimeout(
             () =>
-              this.props.endPictureAnimation(), 250
+              this.props.endPictureAnimation(), 150
           );
         }
       }
@@ -71,33 +47,114 @@ class AnimatedImageContainer extends React.Component {
 
   componentDidMount() {
     TimerMixin.setTimeout(
-      () => this.animate(), 100
+      () => this.animate(), 1000
     );
+  }
+
+  calculatePercentage(width, expectedWidth) {
+    return (((expectedWidth*100)/width) * 0.01)
   }
 
   render() {
     let {
-      topAnim,
-      leftAnim,
-      widthAnim,
-      heightAnim,
-      borderAnim
+      valueScale,
+      valueTranslateX,
+      valueTranslateY
      } = this.state;
-    const allStyles = StyleSheet.flatten(
+
+    let {bottomBarHeight , margins, thumbYOffset, thumbWidth } = othersTheme;
+    let targetScalePercentage = this.calculatePercentage(width, thumbWidth);
+    let previewHeight = height - bottomBarHeight;
+    let thumbHeight = previewHeight * targetScalePercentage;
+    let bottomBarMargin = ((bottomBarHeight - thumbHeight) / 2);
+    // let targetTranslateX = -((width/4) + (15 * 2));
+    let targetTranslateX =
+      -((width/2) - (width * targetScalePercentage / 2) - margins);
+
+    let targetTranslateY =
+      ((height/2) - (thumbHeight / 2) + thumbYOffset);
+    // ((height / 2) - (height * targetScalePercentage / 2) + (othersTheme.marginsx2 + 10));
+    // (height - (height / 2)) - (height * targetScalePercentage / 2) - thumbYOffset
+
+
+
+
+    console.log(
+      `
+
+      targetScalePercentage: ${targetScalePercentage},
+      bottomBarHeight: ${bottomBarHeight},
+      margins: ${margins},
+      thumbYOffset: ${thumbYOffset},
+      thumbHeight: ${thumbHeight},
+      bottomBarMargin: ${bottomBarMargin},
+      width: ${width},
+      height: ${height},
+      targetScalePercentage: ${targetScalePercentage},
+      targetTranslateX: ${targetTranslateX},
+      targetTranslateY: ${targetTranslateY}`
+    );
+
+    let scale = valueScale.interpolate({
+      inputRange: [0, 1],
+      outputRange: [ 1, targetScalePercentage],
+      extrapolate: 'clamp'
+    });
+
+    let translateX = valueTranslateX.interpolate({
+      inputRange: [0, 1],
+      // outputRange: [ 0, targetTranslateX],
+      outputRange: [0 , targetTranslateX],
+      extrapolate: 'clamp'
+    });
+
+    let translateY= valueTranslateY.interpolate({
+      inputRange: [0, 1],
+      outputRange: [ 0, targetTranslateY],
+      extrapolate: 'clamp'
+    });
+
+    // const position= {
+    //   transform: [
+    //     {
+    //       translateX: this.animatedValue.interpolate({
+    //         inputRange: [0, 1],
+    //         outputRange: [0 - (width / 2) - (width * initialScale / 2), 15]
+    //       })
+    //     },
+    //     {
+    //       translateY: this.animatedValue.interpolate({
+    //         inputRange: [0, 1],
+    //         outputRange: [0 - (height / 2) - (height * initialScale / 2), height - 30]
+    //       })
+    //     }
+    //   ]
+    // };
+
+    const scaleStyles = StyleSheet.flatten(
+      [
+        // this.props.style,
+        {transform: [
+          { scale },
+        ]}
+      ])
+
+    const positionStyles = StyleSheet.flatten(
       [
         this.props.style,
-        { top: topAnim },
-        { left: leftAnim },
-        { borderWidth: borderAnim },
-        { height: heightAnim },
-        { width: widthAnim }
+        {transform: [
+          { translateY },
+          { translateX },
+        ]}
       ])
 
     return (
-      <Animated.View
-        style={allStyles}
-      >
-        {this.props.children}
+       <Animated.View style={positionStyles}>
+        <Animated.View
+          style={scaleStyles}
+        >
+          {this.props.children}
+        </Animated.View>
       </Animated.View>
     );
   }

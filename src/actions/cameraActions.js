@@ -3,6 +3,7 @@ import { AsyncStorage } from 'react-native';
 import LocalStorage from '../lib/Categories/LocalStorage';
 import { fetchStorage } from '../actions/storageActions';
 
+
 export function startSavePhotoUrl() {
   return {
     type: actionTypes.START_SAVE_PHOTO_LOCAL_URL
@@ -44,12 +45,14 @@ export const savePhotoUrl =
       LocalStorage.setItem('photos', [...query, photo]);
 
     dispatch(fetchStorage('app-data'))
+    dispatch(onPictureAnimation())
     // debugging: check updated status
     // console.log(LocalStorage.getItem('photos'));
 
   };
 
   export function startPictureAnimation() {
+    dispatch(onPictureAnimation())
     return {
       type: actionTypes.START_PICTURE_ANIMATION
     }

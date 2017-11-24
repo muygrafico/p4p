@@ -10,9 +10,10 @@ const fonts = {
 let othersTheme = {
   aspectRatio: '2:3',
   margins: 15,
-  bottomBarHeight: 120,
+  bottomBarHeight: 200,
   thumbWidth: 50,
-  thumbHeight: 70
+  thumbHeight: 70,
+  thumbYOffset: 30,
 };
 
 othersTheme.marginsx2 = othersTheme.margins * 2;
