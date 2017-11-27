@@ -15,6 +15,8 @@ import {
  } from '../../actions/cameraActions';
 import TimerMixin from 'react-timer-mixin';
 
+import { calculatePercentage } from  '../../Utils';
+
 const {height, width} = Dimensions.get('window');
 
 class AnimatedImageContainer extends React.Component {
@@ -25,9 +27,6 @@ class AnimatedImageContainer extends React.Component {
   }
 
   animate() {
-    // Animated.timing(this.state.valueScale, {
-    //   toValue: 1, duration: 500, useNativeDriver: true
-    // })
     Animated.parallel([
       Animated.timing(this.state.valueTranslateY, { toValue: 1, duration: 500, useNativeDriver: true }),
       Animated.timing(this.state.valueTranslateX, { toValue: 1, duration: 500, useNativeDriver: true }),
@@ -51,9 +50,9 @@ class AnimatedImageContainer extends React.Component {
     );
   }
 
-  calculatePercentage(width, expectedWidth) {
-    return (((expectedWidth*100)/width) * 0.01)
-  }
+  // calculatePercentage(width, expectedWidth) {
+  //   return (((expectedWidth*100)/width) * 0.01)
+  // }
 
   render() {
     let {
@@ -63,25 +62,19 @@ class AnimatedImageContainer extends React.Component {
      } = this.state;
 
     let {bottomBarHeight , margins, thumbYOffset, thumbWidth } = othersTheme;
-    let targetScalePercentage = this.calculatePercentage(width, thumbWidth);
+    let targetScalePercentage = calculatePercentage(width, thumbWidth);
     let previewHeight = height - bottomBarHeight;
     let thumbHeight = previewHeight * targetScalePercentage;
     let bottomBarMargin = ((bottomBarHeight - thumbHeight) / 2);
-    // let targetTranslateX = -((width/4) + (15 * 2));
+
     let targetTranslateX =
       -((width/2) - (width * targetScalePercentage / 2) - margins);
 
     let targetTranslateY =
       ((height/2) - (thumbHeight / 2) + thumbYOffset);
-    // ((height / 2) - (height * targetScalePercentage / 2) + (othersTheme.marginsx2 + 10));
-    // (height - (height / 2)) - (height * targetScalePercentage / 2) - thumbYOffset
-
-
-
 
     console.log(
       `
-
       targetScalePercentage: ${targetScalePercentage},
       bottomBarHeight: ${bottomBarHeight},
       margins: ${margins},
@@ -103,7 +96,6 @@ class AnimatedImageContainer extends React.Component {
 
     let translateX = valueTranslateX.interpolate({
       inputRange: [0, 1],
-      // outputRange: [ 0, targetTranslateX],
       outputRange: [0 , targetTranslateX],
       extrapolate: 'clamp'
     });
@@ -114,26 +106,8 @@ class AnimatedImageContainer extends React.Component {
       extrapolate: 'clamp'
     });
 
-    // const position= {
-    //   transform: [
-    //     {
-    //       translateX: this.animatedValue.interpolate({
-    //         inputRange: [0, 1],
-    //         outputRange: [0 - (width / 2) - (width * initialScale / 2), 15]
-    //       })
-    //     },
-    //     {
-    //       translateY: this.animatedValue.interpolate({
-    //         inputRange: [0, 1],
-    //         outputRange: [0 - (height / 2) - (height * initialScale / 2), height - 30]
-    //       })
-    //     }
-    //   ]
-    // };
-
     const scaleStyles = StyleSheet.flatten(
       [
-        // this.props.style,
         {transform: [
           { scale },
         ]}

@@ -16,54 +16,13 @@ const {height, width} = Dimensions.get('window');
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-const styles = StyleSheet.create({
-  circleContainer: {
-    alignItems:'center',
-    justifyContent:'center',
-  },
-  cameraButton: {
-    width: 45,
-    height: 45,
-    margin:0,
-  },
-  bottomBar: {
-    alignItems: 'center',
-    backgroundColor: colors.black,
-    borderTopColor: colors.white,
-    borderTopWidth: 2,
-    bottom: 0,
-    height: othersTheme.bottomBarHeight,
-    justifyContent: 'center',
-    position: 'absolute',
-    width: '100%',
-    zIndex: 0,
-  },
-  buttonText: {
-    color: colors.white,
-    fontSize: 13,
-    fontWeight: '300',
-    fontFamily: fonts.main,
-    letterSpacing: .5,
-    paddingTop: 10,
-  },
-  thumbStatic: {
-    position: 'absolute',
-    left: 15,
-    top: (othersTheme.bottomBarHeight - othersTheme.thumbHeight)/2 - 5,
-  },
-  thumbStaticText: {
-    color: colors.white,
-    textAlign: 'center',
-    fontSize: 11,
-    marginTop: 5
-  },
-  picture: {
-    width: 50,
-    height: 70,
-    borderWidth: 5,
-    borderColor: colors.white
-  }
-});
+import { calculatePercentage } from  '../../Utils';
+
+const {bottomBarHeight , margins, thumbYOffset, thumbWidth } = othersTheme;
+const targetScalePercentage = calculatePercentage(width, thumbWidth);
+const previewHeight = height - bottomBarHeight;
+const borderWidth = Math.ceil(margins * targetScalePercentage);
+const thumbHeight = previewHeight * targetScalePercentage;
 
 class BottomBar extends React.Component {
 
@@ -78,7 +37,7 @@ class BottomBar extends React.Component {
 
   render() {
     const {navigate} = this.props.navigation;
-
+    console.log(borderWidth);
     return (
       <View style={styles.bottomBar}>
         {this.props.photos &&
@@ -112,5 +71,54 @@ class BottomBar extends React.Component {
     )
   }
 }
+
+const styles = StyleSheet.create({
+  circleContainer: {
+    alignItems:'center',
+    justifyContent:'center',
+  },
+  cameraButton: {
+    width: 45,
+    height: 45,
+    margin:0,
+  },
+  bottomBar: {
+    alignItems: 'center',
+    backgroundColor: colors.black,
+    borderTopColor: colors.white,
+    borderTopWidth: 2,
+    bottom: 0,
+    height: othersTheme.bottomBarHeight,
+    justifyContent: 'center',
+    position: 'absolute',
+    width: '100%',
+    zIndex: 0,
+  },
+  buttonText: {
+    color: colors.white,
+    fontSize: 13,
+    fontWeight: '300',
+    fontFamily: fonts.main,
+    letterSpacing: .5,
+    paddingTop: 10,
+  },
+  thumbStatic: {
+    position: 'absolute',
+    left: margins,
+    top: (bottomBarHeight - thumbHeight)/2 - 3,
+  },
+  thumbStaticText: {
+    color: colors.white,
+    textAlign: 'center',
+    fontSize: 11,
+    marginTop: 5
+  },
+  picture: {
+    width: thumbWidth,
+    height: thumbHeight,
+    borderWidth,
+    borderColor: colors.white
+  }
+});
 
 export default BottomBar;

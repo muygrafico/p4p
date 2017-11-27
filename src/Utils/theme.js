@@ -12,7 +12,6 @@ let othersTheme = {
   margins: 15,
   bottomBarHeight: 200,
   thumbWidth: 50,
-  thumbHeight: 70,
   thumbYOffset: 30,
 };
 
