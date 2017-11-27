@@ -1,3 +1,5 @@
+import { calculatePercentage } from  './index';
+
 const colors = {
   white: '#FBF7F4',
   black: '#282828',
@@ -10,9 +12,9 @@ const fonts = {
 let othersTheme = {
   aspectRatio: '2:3',
   margins: 15,
-  bottomBarHeight: 200,
   thumbWidth: 50,
-  thumbYOffset: 30,
+  thumbYOffset: 35,
+  animationDuration: 350
 };
 
 othersTheme.marginsx2 = othersTheme.margins * 2;

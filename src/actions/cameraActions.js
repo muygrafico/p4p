@@ -2,6 +2,7 @@ import actionTypes from '../constants/actionTypesConstants';
 import { AsyncStorage } from 'react-native';
 import LocalStorage from '../lib/Categories/LocalStorage';
 import { fetchStorage } from '../actions/storageActions';
+import TimerMixin from 'react-timer-mixin';
 
 
 export function startSavePhotoUrl() {
@@ -45,14 +46,21 @@ export const savePhotoUrl =
       LocalStorage.setItem('photos', [...query, photo]);
 
     dispatch(fetchStorage('app-data'))
-    dispatch(onPictureAnimation())
+    .then((response) => {
+       dispatch( onPictureAnimation() )
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+
     // debugging: check updated status
     // console.log(LocalStorage.getItem('photos'));
 
   };
 
   export function startPictureAnimation() {
-    dispatch(onPictureAnimation())
+    // dispatch(onPictureAnimation())
     return {
       type: actionTypes.START_PICTURE_ANIMATION
     }

@@ -21,7 +21,7 @@ import Camera from 'react-native-camera';
 import TimerMixin from 'react-timer-mixin';
 
 import { AutoSignIn } from '../lib/Categories/Auth/Components/Examples';
-import { colors, fonts, othersTheme } from '../Utils/theme';
+import { colors, fonts } from '../Utils/theme';
 import AnimatedImageContainer from '../Components/Home/AnimatedImageContainer';
 import BottomBar from '../Components/Home/BottomBar';
 import { WithAPI } from '../lib/Categories/API/Components';
@@ -29,13 +29,27 @@ import { WithAuth } from '../lib/Categories/Auth/Components';
 import { WithStorage } from '../lib/Categories/Storage/Components';
 
 import { fetchStorage } from '../actions/storageActions';
-import { savePhotoUrl, startPictureAnimation, onPictureAnimation } from '../actions/cameraActions';
+import { savePhotoUrl } from '../actions/cameraActions';
 
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Buffer } from 'buffer';
 import AWS from 'aws-sdk';
 
+import { calculateDimensions } from  '../Utils';
+
 const {height, width} = Dimensions.get('window');
+
+const calculatedDimensions = calculateDimensions(width, height);
+const {
+  targetScalePercentage,
+  previewHeight,
+  bottomBarHeight,
+  borderWidth,
+  thumbHeight,
+  margins,
+  marginsx2,
+  thumbWidth,
+} = calculatedDimensions;
 
 class Home extends React.Component {
   constructor(props) {
@@ -54,60 +68,18 @@ class Home extends React.Component {
         routeName: where
       });
 
-    TimerMixin.setTimeout(
-      () =>
-      this.props.navigation.dispatch(navigateToAutoLogin), 150
-    );
+      this.props.navigation.dispatch(navigateToAutoLogin)
   }
-
-  // readFile = (urlLocal) => new Promise((resolve) => {
-  //   let data = '';
-  //
-  //   RNFetchBlob.fs.readStream(urlLocal, 'base64', 4095)
-  //     .then((ifstream) => {
-  //       ifstream.open()
-  //       ifstream.onData((chunk) => {
-  //         data += chunk
-  //       })
-  //       ifstream.onError((err) => {
-  //         console.log('oops', err)
-  //       })
-  //       ifstream.onEnd(() => {
-  //         resolve(data)
-  //       })
-  //     })
-  // })
-
-  // async handleUploadFile(urlLocal) {
-  //   const url = urlLocal;
-  //   const [, fileName, extension] = /.*\/(.+)\.(\w+)$/.exec(url);
-  //   const { IdentityId } = AWS.config.credentials.data;
-  //   const key = `private/${IdentityId}/${fileName}`;
-  //   let objectUrl = null;
-  //
-  //   try {
-  //     const data = await this.readFile(urlLocal);
-  //     const upload = await this.props.storage.putObject(key, new Buffer(data, 'base64'), 'image/jpeg');
-  //   } catch (err) {
-  //     console.warn(err);
-  //   }
-  //
-  //   // TODO check if should load local or server images
-  //   // this.setState({ objectUrl });
-  // }
 
   takePicture(e) {
     const options = {};
 
     if (!this.props.uiPictureStatusAnimationOngoin) {
-      // this.props.startPictureAnimation();
       this.camera.capture({metadata: options})
       .then((data) => {
-        this.setState({
-          imageURL: data.path
-        });
-        // this.props.onPictureAnimation();
+        this.setState({imageURL: data.path});
         this.props.savePhotoUrl(data.path);
+
         // this.handleUploadFile(data.path);
       })
       .catch(err => console.error(err));
@@ -127,33 +99,22 @@ class Home extends React.Component {
       <View style={styles.appContainer}>
         <StatusBar hidden={true} />
         <View style={styles.livePreviewContainer}>
-          {this.props.uiPictureStatusAnimationOngoin &&
+          {
+            this.props.uiPictureStatusAnimationOngoin &&
             this.state.imageURL &&
-            <AnimatedImageContainer style={styles.AnimatedView}>
+            <AnimatedImageContainer
+              style={styles.AnimatedView}
+              {...this.props}
+              >
                <TouchableHighlight onPress={()=> this.navigate('QueueList')}>
                 <Image
-                  source={{uri: this.state.imageURL}}
+                  // source={{uri: this.state.imageURL}}
+                  source={{uri: this.props.photos.slice(-1).pop().url}}
                   style={styles.picturePreview}
                 />
               </TouchableHighlight>
             </AnimatedImageContainer>
           }
-
-          {/* <AnimatedImageContainer style={styles.AnimatedView}>
-             <TouchableHighlight onPress={()=> this.navigate('QueueList')}>
-              <View style={{
-                  display: 'flex',
-                  backgroundColor: 'blue',
-                  height: height - (othersTheme.bottomBarHeight),
-                  width: width,
-                  position: 'relative',
-                  borderWidth: 15,
-                  borderColor: colors.white
-                }}
-              />
-            </TouchableHighlight>
-          </AnimatedImageContainer> */}
-
 
           <Camera
             ref={cam => this.camera = cam}
@@ -162,7 +123,6 @@ class Home extends React.Component {
             captureQuality={Camera.constants.CaptureQuality.photo}
             aspect={Camera.constants.Aspect.fill}>
           </Camera>
-
 
         </View>
 
@@ -184,33 +144,29 @@ const styles = StyleSheet.create({
     height,
   },
   livePreviewContainer: {
-    height: height - (othersTheme.bottomBarHeight + othersTheme.marginsx2),
+    height: height - (bottomBarHeight + marginsx2),
     width,
     zIndex: 2,
     position: 'absolute'
   },
   AnimatedView: {
     borderColor: colors.white,
-    // borderWidth: othersTheme.margins,
-    height: height - othersTheme.bottomBarHeight,
+    height: height - bottomBarHeight,
     position: 'absolute',
     width: width,
     zIndex: 1,
   },
   picturePreview: {
-    // display: 'flex',
-    // backgroundColor: 'blue',
-    height: height - (othersTheme.bottomBarHeight),
+    height: height - (bottomBarHeight),
     width: width,
-    // position: 'absolute',
     borderWidth: 15,
     borderColor: colors.white
   },
   camera: {
-    left: othersTheme.margins,
-    top: othersTheme.margins,
-    height: height - (othersTheme.bottomBarHeight + othersTheme.marginsx2),
-    width: width - othersTheme.marginsx2,
+    left: margins,
+    top: margins,
+    height: height - (bottomBarHeight + marginsx2),
+    width: width - marginsx2,
   },
 });
 
@@ -226,8 +182,6 @@ function mapStateToProps (state) {
 const mapDispatchToProps = dispatch => bindActionCreators({
   fetchStorage,
   savePhotoUrl,
-  startPictureAnimation,
-  onPictureAnimation,
 }, dispatch);
 
 export default

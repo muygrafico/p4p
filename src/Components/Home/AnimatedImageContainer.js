@@ -1,9 +1,10 @@
 import React from 'react';
 import {
   Animated,
-  StyleSheet,
   Dimensions,
-  Easing
+  Easing,
+  StyleSheet,
+  View,
 } from 'react-native';
 import { colors, fonts, othersTheme } from '../../Utils/theme';
 import { connect } from 'react-redux';
@@ -15,9 +16,46 @@ import {
  } from '../../actions/cameraActions';
 import TimerMixin from 'react-timer-mixin';
 
-import { calculatePercentage } from  '../../Utils';
+import { calculatePercentage, calculateDimensions } from  '../../Utils';
 
 const {height, width} = Dimensions.get('window');
+
+const calculatedDimensions = calculateDimensions(width, height);
+const {
+  targetScalePercentage,
+  previewHeight,
+  bottomBarHeight,
+  borderWidth,
+  thumbHeight,
+  bottomBarMargin,
+  animationDuration
+} = calculatedDimensions;
+
+class Child extends React.Component {
+
+  state = {
+    hidden: ''
+  }
+
+  componentWillMount () {
+
+    setTimeout(() => {
+      this.show();
+    }, this.props.wait);
+  }
+
+  show () {
+    this.setState({hidden : ""});
+  }
+
+  render () {
+    return (
+      <View style={this.state.hidden}>
+        {this.props.children}
+      </View>
+    )
+  }
+};
 
 class AnimatedImageContainer extends React.Component {
   state = {
@@ -28,16 +66,16 @@ class AnimatedImageContainer extends React.Component {
 
   animate() {
     Animated.parallel([
-      Animated.timing(this.state.valueTranslateY, { toValue: 1, duration: 500, useNativeDriver: true }),
-      Animated.timing(this.state.valueTranslateX, { toValue: 1, duration: 500, useNativeDriver: true }),
-      Animated.timing(this.state.valueScale, { toValue: 1, duration: 500, useNativeDriver: true }),
+      Animated.timing(this.state.valueTranslateY, { toValue: 1, easing: Easing.quad, duration: animationDuration, useNativeDriver: true }),
+      Animated.timing(this.state.valueTranslateX, { toValue: 1, easing: Easing.quad, duration: animationDuration, useNativeDriver: true }),
+      Animated.timing(this.state.valueScale, { toValue: 1, easing: Easing.quad, duration: animationDuration, useNativeDriver: true }),
     ])
     .start(
       (event) => {
         if (event.finished) {
+          this.props.fetchStorage('app-data');
           TimerMixin.setTimeout(
-            () =>
-              this.props.endPictureAnimation(), 150
+            () => this.props.endPictureAnimation(), 1
           );
         }
       }
@@ -46,13 +84,9 @@ class AnimatedImageContainer extends React.Component {
 
   componentDidMount() {
     TimerMixin.setTimeout(
-      () => this.animate(), 1000
+      () => this.animate(), animationDuration
     );
   }
-
-  // calculatePercentage(width, expectedWidth) {
-  //   return (((expectedWidth*100)/width) * 0.01)
-  // }
 
   render() {
     let {
@@ -61,11 +95,7 @@ class AnimatedImageContainer extends React.Component {
       valueTranslateY
      } = this.state;
 
-    let {bottomBarHeight , margins, thumbYOffset, thumbWidth } = othersTheme;
-    let targetScalePercentage = calculatePercentage(width, thumbWidth);
-    let previewHeight = height - bottomBarHeight;
-    let thumbHeight = previewHeight * targetScalePercentage;
-    let bottomBarMargin = ((bottomBarHeight - thumbHeight) / 2);
+    let { margins, marginsx2, thumbYOffset, thumbWidth } = othersTheme;
 
     let targetTranslateX =
       -((width/2) - (width * targetScalePercentage / 2) - margins);
@@ -73,20 +103,6 @@ class AnimatedImageContainer extends React.Component {
     let targetTranslateY =
       ((height/2) - (thumbHeight / 2) + thumbYOffset);
 
-    console.log(
-      `
-      targetScalePercentage: ${targetScalePercentage},
-      bottomBarHeight: ${bottomBarHeight},
-      margins: ${margins},
-      thumbYOffset: ${thumbYOffset},
-      thumbHeight: ${thumbHeight},
-      bottomBarMargin: ${bottomBarMargin},
-      width: ${width},
-      height: ${height},
-      targetScalePercentage: ${targetScalePercentage},
-      targetTranslateX: ${targetTranslateX},
-      targetTranslateY: ${targetTranslateY}`
-    );
 
     let scale = valueScale.interpolate({
       inputRange: [0, 1],
@@ -123,11 +139,11 @@ class AnimatedImageContainer extends React.Component {
       ])
 
     return (
-       <Animated.View style={positionStyles}>
+      <Animated.View style={positionStyles}>
         <Animated.View
           style={scaleStyles}
-        >
-          {this.props.children}
+          >
+            {this.props.children}
         </Animated.View>
       </Animated.View>
     );

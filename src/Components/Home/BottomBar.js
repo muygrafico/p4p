@@ -10,21 +10,34 @@ import {
   View,
 } from 'react-native';
 import { NavigationActions } from "react-navigation";
-import { colors, fonts, othersTheme } from '../../Utils/theme';
-const {height, width} = Dimensions.get('window');
+import {
+  colors,
+  fonts,
+  othersTheme
+} from '../../Utils/theme';
+const { width, height } = Dimensions.get('window');
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import TimerMixin from 'react-timer-mixin';
 
-import { calculatePercentage } from  '../../Utils';
+import { calculatePercentage, calculateDimensions } from  '../../Utils';
 
-const {bottomBarHeight , margins, thumbYOffset, thumbWidth } = othersTheme;
-const targetScalePercentage = calculatePercentage(width, thumbWidth);
-const previewHeight = height - bottomBarHeight;
-const borderWidth = Math.ceil(margins * targetScalePercentage);
-const thumbHeight = previewHeight * targetScalePercentage;
+const { margins, marginsx2, thumbYOffset, thumbWidth } = othersTheme;
+const calculatedDimensions = calculateDimensions(width, height);
+const {
+  targetScalePercentage,
+  previewHeight,
+  bottomBarHeight,
+  thumbBorderWidth,
+  thumbHeight,
+} = calculatedDimensions;
 
 class BottomBar extends React.Component {
+  state =  {
+    countDown: 500,
+    finish: false
+  }
 
   shouldComponentUpdate(nextProps, nextState) {
     return nextProps.uiPictureStatusAnimationEnd &&
@@ -37,7 +50,7 @@ class BottomBar extends React.Component {
 
   render() {
     const {navigate} = this.props.navigation;
-    console.log(borderWidth);
+
     return (
       <View style={styles.bottomBar}>
         {this.props.photos &&
@@ -58,15 +71,16 @@ class BottomBar extends React.Component {
             </Text>
           </TouchableOpacity>
         }
-        <TouchableOpacity
-          style={styles.circleContainer}
-          onPress={() => this.handleOnPress()}
-        >
-          <Image style={styles.cameraButton}
-            source={require('../../img/camera-button.png')}
-          />
+        <View style={styles.circleContainer}>
+          <TouchableOpacity
+            onPress={() => this.handleOnPress()}
+          >
+            <Image style={styles.cameraButton}
+              source={require('../../img/camera-button.png')}
+            />
+          </TouchableOpacity>
           <Text style={styles.buttonText}>push for photo</Text>
-        </TouchableOpacity>
+        </View>
       </View>
     )
   }
@@ -88,7 +102,7 @@ const styles = StyleSheet.create({
     borderTopColor: colors.white,
     borderTopWidth: 2,
     bottom: 0,
-    height: othersTheme.bottomBarHeight,
+    height: bottomBarHeight,
     justifyContent: 'center',
     position: 'absolute',
     width: '100%',
@@ -116,7 +130,7 @@ const styles = StyleSheet.create({
   picture: {
     width: thumbWidth,
     height: thumbHeight,
-    borderWidth,
+    borderWidth: thumbBorderWidth,
     borderColor: colors.white
   }
 });

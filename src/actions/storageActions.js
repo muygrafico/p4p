@@ -21,9 +21,15 @@ export function getStorageFailure(error) {
   }
 };
 
+export function onPictureAnimation() {
+  return {
+    type: actionTypes.ON_PICTURE_ANIMATION
+  }
+};
+
 export const fetchStorage =
   async (key) => async (dispatch) => {
-    dispatch(getStorage())
+    // dispatch(getStorage())
     AsyncStorage.getItem(key).then( value => {
       dispatch(getStorageSuccess(JSON.parse(value)));
 
