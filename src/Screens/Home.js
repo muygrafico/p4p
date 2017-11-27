@@ -108,8 +108,8 @@ class Home extends React.Component {
               >
                <TouchableHighlight onPress={()=> this.navigate('QueueList')}>
                 <Image
-                  // source={{uri: this.state.imageURL}}
-                  source={{uri: this.props.photos.slice(-1).pop().url}}
+                  source={{uri: this.state.imageURL}}
+                  // source={{uri: this.props.photos.slice(-1).pop().url}}
                   style={styles.picturePreview}
                 />
               </TouchableHighlight>
