@@ -27,15 +27,13 @@ import BottomBar from '../Components/Home/BottomBar';
 import { WithAPI } from '../lib/Categories/API/Components';
 import { WithAuth } from '../lib/Categories/Auth/Components';
 import { WithStorage } from '../lib/Categories/Storage/Components';
-
 import { fetchStorage } from '../actions/storageActions';
 import { savePhotoUrl } from '../actions/cameraActions';
-
 import RNFetchBlob from 'react-native-fetch-blob';
 import { Buffer } from 'buffer';
 import AWS from 'aws-sdk';
 
-import { calculateDimensions } from  '../Utils';
+import { calculateDimensions, readFile, handleUploadFile } from  '../Utils';
 
 const {height, width} = Dimensions.get('window');
 
@@ -73,14 +71,15 @@ class Home extends React.Component {
 
   takePicture(e) {
     const options = {};
+    const { IdentityId } = AWS.config.credentials.data;
+    const storage = this.props.storage;
 
     if (!this.props.uiPictureStatusAnimationOngoin) {
       this.camera.capture({metadata: options})
       .then((data) => {
         this.setState({imageURL: data.path});
         this.props.savePhotoUrl(data.path);
-
-        // this.handleUploadFile(data.path);
+        handleUploadFile(data.path, IdentityId, storage);
       })
       .catch(err => console.error(err));
     }
@@ -109,7 +108,6 @@ class Home extends React.Component {
                <TouchableHighlight onPress={()=> this.navigate('QueueList')}>
                 <Image
                   source={{uri: this.state.imageURL}}
-                  // source={{uri: this.props.photos.slice(-1).pop().url}}
                   style={styles.picturePreview}
                 />
               </TouchableHighlight>

@@ -1,8 +1,48 @@
 import { othersTheme } from './theme';
+import RNFetchBlob from 'react-native-fetch-blob';
+import { Buffer } from 'buffer';
 
-export const calculatePercentage = function(width, expectedWidth) {
-    return (((expectedWidth*100)/width) * 0.01)
+export const readFile  =  (urlLocal) => new Promise((resolve) => {
+  let data = '';
+
+  RNFetchBlob.fs.readStream(urlLocal, 'base64', 4095)
+  .then((ifstream) => {
+    ifstream.open()
+    ifstream.onData((chunk) => {
+      data += chunk
+    })
+    ifstream.onError((err) => {
+      console.log('oops', err)
+    })
+    ifstream.onEnd(() => {
+      resolve(data)
+    })
+  })
+})
+
+export const handleUploadFile  =  async (urlLocal, IdentityId, storage) => {
+  const url = urlLocal;
+  const [, fileName, extension] = /.*\/(.+)\.(\w+)$/.exec(url);
+  const key = `private/${IdentityId}/${fileName}`;
+  let objectUrl = null;
+
+  try {
+    const data = await readFile(urlLocal);
+    const upload = await storage.putObject(key, new Buffer(data, 'base64'), 'image/jpeg');
+  } catch (err) {
+    console.warn(`handleUploadFile: ${err}`);
+  }
+}
+
+// Utility used at calculateDimensions, line 55
+
+export const calculatePercentage = function(screenWidth, expectedWidth) {
+    return (((expectedWidth*100)/screenWidth) * 0.01)
 };
+
+// Utility for calculating all final dimensions and percetanges of thumbnail
+// animation using transform translate and scale ir to make usable useNativeDriver
+// at AnimatedImageContainer component
 
 export const calculateDimensions = function(width, height) {
   let d = {};
