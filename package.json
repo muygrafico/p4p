@@ -28,7 +28,7 @@
     "mime-types": "^2.1.17",
     "moment": "^2.19.2",
     "react": "16.0.0-beta.5",
-    "react-native": "^0.50.0",
+    "react-native": "0.50.4",
     "react-native-aws-cognito-js": "0.0.7",
     "react-native-camera": "^0.6.0",
     "react-native-elements": "^0.18.2",

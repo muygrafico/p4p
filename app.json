@@ -1,7 +1,4 @@
 {
-  "expo": {
-    "sdkVersion": "22.0.0"
-  },
   "name": "pushforphotoapp",
-  "displayName": "PushForPhoto"
+  "displayName": "pushforphotoapp"
 }
