@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
 function mapStateToProps (state) {
   return {
     appData: state.appData,
-    photos: state.appData.storage.data.photos
+    photos: state.appData.storage.photos
   }
 }
 const mapDispatchToProps = dispatch => bindActionCreators({

@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "babel-plugin-module-resolver": "^3.0.0",
     "babel-preset-react-native-stage-0": "^1.0.1",
     "babel-preset-stage-0": "^6.24.1",
     "jest-expo": "^22.0.0",
@@ -50,6 +51,7 @@
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.2.0",
     "rxjs": "^5.5.2",
-    "uninstall": "0.0.0"
+    "uninstall": "0.0.0",
+    "uuid": "^3.1.0"
   }
 }

@@ -1,4 +1,4 @@
-import { AppNavigator } from '../navigators/AppNavigator';
+import { AppNavigator } from '../Navigators/AppNavigator';
 
 const initialNavState = AppNavigator.router.getStateForAction(
   AppNavigator.router.getActionForPathAndParams('Autologin')

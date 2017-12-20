@@ -7,10 +7,11 @@ export function getStorage() {
   }
 };
 
-export function getStorageSuccess(response) {
+export function getStorageSuccess(key, payload) {
   return {
     type: actionTypes.GET_STORAGE_SUCCESS,
-    response,
+    payload,
+    key
   }
 };
 
@@ -29,9 +30,9 @@ export function onPictureAnimation() {
 
 export const fetchStorage =
   async (key) => async (dispatch) => {
-    // dispatch(getStorage())
+    dispatch(getStorage())
     AsyncStorage.getItem(key).then( value => {
-      dispatch(getStorageSuccess(JSON.parse(value)));
+      dispatch(getStorageSuccess(key, JSON.parse(value)));
 
     }, error => {
       console.exception(`fetchStorage error at storageActions: ${error}!`);

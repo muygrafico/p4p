@@ -40,16 +40,13 @@ class AutoSignIn extends React.Component {
     this.handleMFASuccess = this.handleMFASuccess.bind(this);
   }
 
-  navigate = () => {
-      const navigateToHome = NavigationActions.navigate({
-        routeName:'Home',
-        params:{name:'Home'}
+  navigate (where) {
+    let navigateTo =
+      NavigationActions.navigate({
+        routeName: where
       });
 
-      TimerMixin.setTimeout(
-        () =>
-          this.props.navigation.dispatch(navigateToHome), 1000
-      );
+      this.props.navigation.dispatch(navigateTo)
   }
 
   /**
@@ -68,9 +65,13 @@ class AutoSignIn extends React.Component {
       const session = await new Promise((resolve) => {
         auth.handleSignIn(username, password, auth.loginCallbackFactory({
           onSuccess(session) {
-            // console.log('loginCallbacks.onSuccess', session);
+            console.log('loginCallbacks.onSuccess', session);
             resolve(session);
-            this.navigate();
+
+            // const { isLoggedIn } = this.props;
+
+            session ?
+              this.navigate('Home') : this.handleSignIn();
           },
           onFailure(err) {
             console.log('loginCallbacks.onFailure', err);
@@ -85,6 +86,8 @@ class AutoSignIn extends React.Component {
           },
         }, this));
       });
+
+      console.log(session);
 
       this.setState({ showMFAPrompt }, () => {
         if (session) {
@@ -102,10 +105,16 @@ class AutoSignIn extends React.Component {
       this.props.onSignIn(session);
 
       console.log('CLIENT', 'Signed In: ' + (session ? 'YES' : 'NO'));
+
+
     } catch (err) {
       console.log('CLIENT', err.message);
       this.setState({ errorMessage: err.message });
-      this.handleSignIn();
+      TimerMixin.setTimeout(
+        () =>
+          this.handleSignIn(), 1000
+      );
+
     }
   }
 
@@ -128,8 +137,21 @@ class AutoSignIn extends React.Component {
 
   componentDidMount() {
     this.props.fetchStorage('app-data');
-    this.handleSignIn();
   }
+
+  componentDidUpdate () {
+    const { isLoggedIn } = this.props;
+
+    isLoggedIn ?
+      this.navigate('Home') : this.handleSignIn();
+    // console.log(this.props.isLoggedIn);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    // console.log(nextProps.isLoggedIn, this.props.isLoggedIn);
+    // console.log(nextProps.isLoggedIn !== this.props.isLoggedIn);
+    return nextProps.isLoggedIn !== this.props.isLoggedIn;
+ }
 
   render() {
     return (
@@ -174,7 +196,8 @@ const styles = StyleSheet.create({
 
 function mapStateToProps (state) {
   return {
-    appData: state.appData
+    appData: state.appData,
+    isLoggedIn: state.appData.isLoggedIn
   }
 }
 const mapDispatchToProps = dispatch => bindActionCreators({

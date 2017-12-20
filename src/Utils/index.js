@@ -1,6 +1,8 @@
-import { othersTheme } from './theme';
-import RNFetchBlob from 'react-native-fetch-blob';
 import { Buffer } from 'buffer';
+import BackgroundTask from 'react-native-background-task';
+import RNFetchBlob from 'react-native-fetch-blob';
+
+import { othersTheme } from './theme';
 
 export const readFile  =  (urlLocal) => new Promise((resolve) => {
   let data = '';
@@ -67,4 +69,14 @@ export const calculateDimensions = function(width, height) {
   d.animationDuration = animationDuration;
 
   return d;
+};
+
+export const consoleLogList = function(arr) {
+
+  arr.filter(photo =>
+    !photo.uploaded
+  ).map(photo => {
+    console.log(photo);
+  });
+
 };

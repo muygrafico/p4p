@@ -2,88 +2,73 @@ import actionTypes from '../constants/actionTypesConstants';
 import { actions as storageActions } from 'react-native-redux-storage-middleware';
 
 const initialState = {
-  serverData: {
-    data: [],
-    fetched: false,
-    fetching: false,
-    error: false
-  },
-  storage: {
-    data: [
-      {photos: []}
-    ],
-    fetched: false,
-    fetching: false,
-    error: false
-  }
+  awsData: [],
+  isLoggedIn: null,
+  storage: null,
+  storageFetched: null,
+  storageFetching: null,
+  storageFetchingError: null
 };
 
 export default function Reducer (state = initialState, action) {
   switch (action.type) {
-    case actionTypes.FETCHING_DATA:
-      return {
-        ...state,
-        serverData: {
-          data: [],
-          fetched: false,
-          fetching: true,
-          error: false
-        }
-      }
-    case actionTypes.FETCHING_DATA_SUCCESS:
-      return {
-        ...state,
-        serverData: {
-          data: action.data,
-          fetched: true,
-          fetching: false,
-          error: false
-        }
-      }
-    case actionTypes.FETCHING_DATA_FAILURE:
-      return {
-        ...state,
-        serverData: {
-          data: action.data,
-          fetched: false,
-          fetching: false,
-          error: true
-        }
-      }
+    // case actionTypes.FETCHING_DATA:
+    //   return Object.assign({}, state, { serverFetching: true });
+    //
+    // case actionTypes.FETCHING_DATA_SUCCESS:
+    //   console.log(action.data);
+    //   return Object.assign({}, state, {
+    //     serverData: action.data,
+    //     serverFetched: true,
+    //     serverResponseError: false
+    //   });
+    // case actionTypes.FETCHING_DATA_FAILURE:
+    //   return Object.assign({}, state, {
+    //     serverFetched: false,
+    //     serverResponseError: true
+    //   });
+
     case actionTypes.GET_STORAGE:
-      return {
-        ...state,
-        storage: {
-          data: [
-            {photos: []}
-          ],
-          fetched: false,
-          fetching: true,
-          error: false
-        }
-      }
+      return Object.assign({}, state, { storageFetching: true });
+
     case actionTypes.GET_STORAGE_SUCCESS:
-      return {
-        ...state,
-        storage: {
-          data: action.response,
-          fetched: true,
-          fetching: false,
-          error: false
-        }
+    console.log(action.key);
+    console.log(action.payload);
+      switch (action.key) {
+        case 'app-data':
+           action.payload.awsCredentials = action.payload.awsCredentials ?
+           JSON.parse(action.payload.awsCredentials) :
+              action.payload.awsCredentials;
+
+          return Object.assign({}, state, {
+            isLoggedIn: action.payload.isLoggedIn,
+            storage: {
+              photos: action.payload.photos,
+              isLoggedIn: action.payload.isLoggedIn,
+              awsCredentials: action.payload.awsCredentials,
+            },
+            storageFetched: true,
+            storageFetching: false,
+            storageFetchingError: false
+          });
+
+        case 'photos':
+        return Object.assign({}, state, {
+          photos: action.payload
+        });
+
+        default:
+        return Object.assign({}, state, {
+          [action.key]: action.payload
+        });
+
       }
+
     case actionTypes.GET_STORAGE_FAILURE:
-      return {
-        ...state,
-        storage: {
-          data: [
-            {photos: []}
-          ],
-          fetched: false,
-          fetching: false,
-          error: true
-        }
-      }
+      return Object.assign({}, state, {
+        storageFetching: false,
+        storageFetchingError: true
+      });
 
     default:
       return state

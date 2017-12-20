@@ -33,7 +33,10 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import { Buffer } from 'buffer';
 import AWS from 'aws-sdk';
 
-import { calculateDimensions, readFile, handleUploadFile } from  '../Utils';
+import BackgroundTask from 'react-native-background-task';
+
+
+import { calculateDimensions, readFile, handleUploadFile, consoleLogList } from  '../Utils';
 
 const {height, width} = Dimensions.get('window');
 
@@ -48,6 +51,21 @@ const {
   marginsx2,
   thumbWidth,
 } = calculatedDimensions;
+
+BackgroundTask.define(async () => {
+  // Fetch some data over the network which we want the user to have an up-to-
+  // date copy of, even if they have no network when using the app
+  // const response = await fetch('http://feeds.bbci.co.uk/news/rss.xml')
+  // const text = await response.text()
+
+  console.log('bla');
+
+  // Data persisted to AsyncStorage can later be accessed by the foreground app
+  // await AsyncStorage.setItem('@MyApp:key', text)
+
+  // Remember to call finish()
+  BackgroundTask.finish()
+})
 
 class Home extends React.Component {
   constructor(props) {
@@ -72,6 +90,7 @@ class Home extends React.Component {
   takePicture(e) {
     const options = {};
     const { IdentityId } = AWS.config.credentials.data;
+    console.log(IdentityId);
     const storage = this.props.storage;
 
     if (!this.props.uiPictureStatusAnimationOngoin) {
@@ -87,14 +106,23 @@ class Home extends React.Component {
 
   componentDidMount() {
     this.props.fetchStorage('app-data');
+    const { photos, storage } = this.props;
+
+    // const AWSLocal = JSON.parse(this.props.appData.storage.data.awsCredentials);
+    // TimerMixin.setTimeout(
+    //   () => {
+    //     const { IdentityId } = AWS.config.credentials.data;
+    //     console.log(IdentityId);
+    //   }
+    //   , 250
+    // );
+
+    BackgroundTask.schedule();
+     // consoleLogList(photos, IdentityId, storage);
   }
 
   render() {
-    const { session } = this.props;
-
     return (
-      session ?
-    (
       <View style={styles.appContainer}>
         <StatusBar hidden={true} />
         <View style={styles.livePreviewContainer}>
@@ -129,9 +157,6 @@ class Home extends React.Component {
           {...this.props}
         />
       </View>
-    )
-     :
-     this.navigate('AutoLogin')
     );
   }
 };
@@ -171,7 +196,7 @@ const styles = StyleSheet.create({
 function mapStateToProps (state) {
   return {
     appData: state.appData,
-    photos: state.appData.storage.data.photos,
+    photos: state.appData.storage.photos,
     uiPictureStatusAnimationStart: state.ui.picturePreview.animationStart,
     uiPictureStatusAnimationOngoin: state.ui.picturePreview.animationOngoin,
     uiPictureStatusAnimationEnd: state.ui.picturePreview.animationEnd,
